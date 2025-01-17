@@ -27,13 +27,26 @@ public class StaffDAO {
                 staff = new Staff();
                 staff.setStaffID(resultSet.getInt("staffID"));
                 staff.setStaffPassword(resultSet.getString("staffPassword"));
-                staff.setRole(Role.fromValue(resultSet.getInt("role"))); // Convert role from String to Role enum
+                
+                // Convert role from Integer to Role enum, if possible
+                staff.setRole(Role.fromValue(resultSet.getInt("role")));
+                
+                // Handle nullable fields
                 staff.setStaffName(resultSet.getString("staffName"));
-                staff.setStaffFullname(resultSet.getString("staffFullname")); // Retrieve full name
-                staff.setStaffEmail(resultSet.getString("staffEmail")); // Retrieve email
-                staff.setStaffPosition(resultSet.getString("staffPosition")); // Retrieve position
-                staff.setStaffPhoneno(resultSet.getString("staffPhoneno")); // Retrieve phone number
-                staff.setStaffAddress(resultSet.getString("staffAddress")); // Retrieve address
+                staff.setStaffFullname(resultSet.getString("staffFullname"));
+                staff.setStaffEmail(resultSet.getString("staffEmail"));
+                staff.setStaffPosition(resultSet.getString("staffPosition"));
+                staff.setStaffPhoneno(resultSet.getString("staffPhoneno"));
+                staff.setStaffAddress(resultSet.getString("staffAddress"));
+
+                // Handle nullable Date fields safely
+                staff.setStaffJoinedDate(resultSet.getDate("staffJoinedDate"));
+                staff.setStaffGender(resultSet.getString("staffGender"));
+                staff.setStaffDOB(resultSet.getDate("staffDOB"));
+                staff.setStaffMaritalStatus(resultSet.getString("staffMaritalStatus"));
+                staff.setStaffEmpType(resultSet.getString("staffEmpType"));
+                staff.setStaffBank(resultSet.getString("staffBank"));
+                staff.setStaffAccNo(resultSet.getString("staffAccNo"));
             }
         } catch (SQLException e) {
             e.printStackTrace();
@@ -48,7 +61,7 @@ public class StaffDAO {
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, staffID);
             statement.setString(2, staffPassword);
-            statement.setInt(3, role.getValue()); // Convert Role to its String value
+            statement.setInt(3, role.getValue()); // Convert Role to its Integer value
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 isValid = true;
@@ -58,7 +71,7 @@ public class StaffDAO {
         }
         return isValid;
     }
-    
+
     public List<Staff> getAllEmployees() {
         List<Staff> employees = new ArrayList<>();
         String query = "SELECT staffID, staffFullname, staffEmail, staffPosition FROM staff";
@@ -78,5 +91,4 @@ public class StaffDAO {
         }
         return employees;
     }
-
 }

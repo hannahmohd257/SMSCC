@@ -4,7 +4,34 @@
     Author     : user
 --%>
 
+<%@page import="java.sql.Date"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+    String staffFullname = (String) session.getAttribute("staffFullname");
+    String salaryBasic = (String) session.getAttribute("salaryBasic");
+    String salaryDeduction = (String) session.getAttribute("salaryDeduction");
+    String salaryOvtRate = (String) session.getAttribute("salaryOvtRate");
+    
+    if (salaryBasic != null) session.setAttribute("salaryBasic", salaryBasic);
+    if (salaryDeduction != null) session.setAttribute("salaryDeduction", salaryDeduction);
+    if (salaryOvtRate != null) session.setAttribute("salaryOvtRate", salaryOvtRate);
+    
+    Integer staffRole = (Integer) session.getAttribute("staffRole");
+    Date staffDOB = (Date) session.getAttribute("staffDOB");
+    String staffAddress = (String) session.getAttribute("staffAddress");
+    String staffPhoneNo = request.getParameter("staffPhoneNo");
+    String staffEmail = request.getParameter("staffEmail");
+    String staffMaritalStatus = request.getParameter("staffMaritalStatus");
+    String staffEmpType = request.getParameter("staffEmpType");
+
+    if (staffRole == null) staffRole = 0;
+    if (staffDOB == null) staffDOB = null;
+    if (staffAddress == null) staffAddress = "";
+    if (staffPhoneNo == null) staffPhoneNo = "";
+    if (staffEmail == null) staffEmail = "";
+    if (staffMaritalStatus == null) staffMaritalStatus = "";
+    if (staffEmpType == null) staffEmpType = "";
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -13,7 +40,14 @@
         body {
             font-family: Arial, sans-serif;
             margin: 0;
+            padding: 0;
             background-color: #f4f4f9;
+            display: flex; /* Flex layout for the main content */
+            min-height: 100vh; /* Ensure full height */
+        }
+        .container {
+            display: flex;
+            width: 100%;
         }
         /* Sidebar Styling */
         .sidebar {
@@ -24,6 +58,7 @@
             flex-direction: column;
             align-items: center;
             padding: 20px;
+            flex-shrink: 0; /* Prevent shrinking of the sidebar */
         }
 
         .profile {
@@ -93,21 +128,32 @@
         .logout:hover {
             background-color: #6a7199;
         }
-        .container {
+        .container-main {
+            flex: 1; /* Allow main content to expand */
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            flex-direction: column; /* Stack children vertically */
+            align-items: center; /* Center elements horizontally */
             padding: 20px;
+            gap: 20px; /* Add space between children */
         }
         h1 {
             font-size: 24px;
             color: #2c2f48;
             margin-bottom: 20px;
         }
+        
+        h2 {
+            font-size: 24px;
+            color: #2c2f48;
+            margin: 0;
+            text-align: center;
+        }
         .steps {
             display: flex;
-            justify-content: space-around;
-            margin: 20px 0;
+            justify-content: center; /* Center navigation steps horizontally */
+            gap: 40px; /* Space between steps */
+            margin: 0;
+            width: 100%;
         }
 
         .step {
@@ -147,8 +193,9 @@
             color: white;
         }
 
-                form {
-            width: 50%;
+        form {
+            width: 100%; /* Take full width within container */
+            max-width: 500px; /* Limit form width */
             background: white;
             padding: 20px;
             border-radius: 8px;
@@ -167,10 +214,10 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
+
         .button-container {
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
         }
         button {
             padding: 10px 20px;
@@ -180,9 +227,7 @@
             cursor: pointer;
             background-color: #2c2f48;
         }
-        .save-btn {
-            background-color: #2c2f48;
-        }
+
         .cancel-btn {
             background-color: #aaa;
         }
@@ -193,70 +238,89 @@
 </head>
 <body>
     <div class="container">
-        <h2>Step 3: Personal Info</h2>
-
-        <!-- Navigation Steps -->
-        <div class="steps">
-            <div class="step">
-                <a href="foAddEmployee1.jsp">
-                    <div class="circle">1</div>
-                </a>
-                <div class="step-title">Basics</div>
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile">
+                <div class="profile-pic"></div>
+                <p class="profile-name"><%= staffFullname %></p>
             </div>
-            <div class="step">
-                <a href="foAddEmployee2.jsp">
-                    <div class="circle">2</div>
-                </a>
-                <div class="step-title">Salary Details</div>
-            </div>
-            <div class="step">
-                <a href="foAddEmployee3.jsp">
-                    <div class="circle active">3</div>
-                </a>
-                <div class="step-title">Personal Info</div>
-            </div>
-            <div class="step">
-                <a href="foAddEmployee4.jsp">
-                    <div class="circle">4</div>
-                </a>
-                <div class="step-title">Payment Info</div>
-            </div>
+            <ul class="nav-links">
+                <li><a href="foDashboard.jsp">Home</a></li>
+                <li><a href="EmployeeListServlet" class="active">Employees</a></li>
+                <li><a href="foApprovals.jsp">Approvals</a></li>
+                <li><a href="foReports.jsp">Reports</a></li>
+            </ul>
+            <a href="logout.jsp" class="logout">Logout</a>
         </div>
 
-        <form action="AddEmployeeServlet" method="post">
-            <input type="hidden" name="step" value="3">
-            <label>Date of Birth:</label>
-            <input type="date" name="dateOfBirth" required><br>
-
-            <label>Address:</label>
-            <textarea name="address" required></textarea><br>
-
-            <label>Contact Number:</label>
-            <input type="text" name="contactNumber" required><br>
-
-            <label>Email:</label>
-            <input type="email" name="email" required><br>
-
-            <label>Marital Status:</label>
-            <select name="maritalStatus">
-                <option value="Single">Single</option>
-                <option value="Married">Married</option>
-                <option value="Divorced">Divorced</option>
-            </select><br>
-
-            <label>Employment Type:</label>
-            <select name="employmentType">
-                <option value="Full-Time">Full-Time</option>
-                <option value="Part-Time">Part-Time</option>
-                <option value="Contract">Contract</option>
-            </select><br>
-
-            <div class="button-container">
-                <!--<button type="button" class="cancel-btn" onclick="window.location.href='CancelPage.jsp'">Cancel</button> -->
-                <button type="reset" class="cancel-btn">Cancel</button>
-                <button type="submit">Next</button>
+        <!-- Navigation Steps -->
+        <div class="container-main">
+            <h2>Step 3: Personal Info</h2>
+            <div class="steps">
+                <div class="step">
+                    <a href="foAddEmployee1.jsp">
+                        <div class="circle">1</div>
+                    </a>
+                    <div class="step-title">Basics</div>
+                </div>
+                <div class="step">
+                    <a href="foAddEmployee2.jsp">
+                        <div class="circle">2</div>
+                    </a>
+                    <div class="step-title">Salary Details</div>
+                </div>
+                <div class="step">
+                    <a href="foAddEmployee3.jsp">
+                        <div class="circle active">3</div>
+                    </a>
+                    <div class="step-title">Personal Info</div>
+                </div>
+                <div class="step">
+                    <a href="foAddEmployee4.jsp">
+                        <div class="circle">4</div>
+                    </a>
+                    <div class="step-title">Payment Info</div>
+                </div>
             </div>
-        </form>
+
+            <form action="AddEmployeeServlet" method="post">
+                <input type="hidden" name="step" value="3">
+                <label>Role:</label>
+                <input type="text" id="staffRole" name="staffRole" value="<%= staffRole %>" required><br>
+                <label>Date of Birth:</label>
+                <input type="date" id="staffDOB" name="staffDOB" value="<%= staffDOB %>" required><br>
+
+                <label>Address:</label>
+                <textarea name="address" id="staffAddress" value="<%= staffAddress %>" style="width: 300px; height: 50px;" required></textarea><br>
+
+                <label>Contact Number:</label>
+                <input type="text" id="staffPhoneNo" name="staffPhoneNo" value="<%= staffPhoneNo %>" required><br>
+
+                <label>Email:</label>
+                <input type="email" id="staffEmail" name="staffEmail" value="<%= staffEmail %>" required><br>
+
+                <label for="staffMaritalStatus">Marital Status:</label>
+                <select id="staffMaritalStatus" name="staffMaritalStatus">
+                    <option value="Single" <%= "Single".equals(staffMaritalStatus) ? "selected" : "" %>>Single</option>
+                    <option value="Married" <%= "Married".equals(staffMaritalStatus) ? "selected" : "" %>>Married</option>
+                    <option value="Divorced" <%= "Divorced".equals(staffMaritalStatus) ? "selected" : "" %>>Divorced</option>
+                </select><br>
+
+                <label for="staffEmpType">Employment Type:</label>
+                <select id="staffEmpType" name="staffEmpType">
+                    <option value="Full-Time" <%= "Full-Time".equals(staffEmpType) ? "selected" : "" %>>Full-Time</option>
+                    <option value="Part-Time" <%= "Part-Time".equals(staffEmpType) ? "selected" : "" %>>Part-Time</option>
+                    <option value="Contract" <%= "Contract".equals(staffEmpType) ? "selected" : "" %>>Contract</option>
+                </select><br>
+
+                <div class="button-container">
+                    <!--<button type="button" class="cancel-btn" onclick="window.location.href='CancelPage.jsp'">Cancel</button> -->
+                    <!-- <button type="reset" class="cancel-btn">Cancel</button> -->
+                    <button type="button" class="back-btn" onclick="window.history.back()">Back</button>
+                    <button type="submit">Next</button>
+                </div>
+            </form>
+        </div>
     </div>
 </body>
 </html>

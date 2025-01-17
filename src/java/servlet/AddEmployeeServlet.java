@@ -5,61 +5,99 @@
 package servlet;
 
 import java.io.IOException;
-import java.util.HashMap;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.servlet.*;
+import javax.servlet.http.*;
 
 public class AddEmployeeServlet extends HttpServlet {
-    private HashMap<String, String> employeeData = new HashMap<>();
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+
+        // Retrieve the step from the form
         String step = request.getParameter("step");
 
-        switch (step) {
-            case "1":
-                // Store basic info
-                employeeData.put("staffName", request.getParameter("staffName"));
-                employeeData.put("joinedDate", request.getParameter("joinedDate"));
-                employeeData.put("gender", request.getParameter("gender"));
-                employeeData.put("position", request.getParameter("position"));
-                request.getRequestDispatcher("foAddEmployee2.jsp").forward(request, response);
-                break;
+        // Handle Step 1: Basics
+        if ("1".equals(step)) {
+            String staffFullname = request.getParameter("staffFullname");
+            String staffName = request.getParameter("staffName");
+            String staffJoinedDateStr = request.getParameter("staffJoinedDate"); // String representation
+            String staffGender = request.getParameter("staffGender");
+            String staffPosition = request.getParameter("staffPosition");
 
-            case "2":
-                // Store salary details
-                employeeData.put("basicSalary", request.getParameter("basicSalary"));
-                employeeData.put("deductions", request.getParameter("deductions"));
-                employeeData.put("overtimeRate", request.getParameter("overtimeRate"));
-                request.getRequestDispatcher("foAddEmployee3.jsp").forward(request, response);
-                break;
+            // Parse staffJoinedDate from String to Date
+            Date staffJoinedDate = parseDate(staffJoinedDateStr);
+            session.setAttribute("staffFullname", staffFullname);
+            session.setAttribute("staffName", staffName);
+            session.setAttribute("staffJoinedDate", staffJoinedDate);
+            session.setAttribute("staffGender", staffGender);
+            session.setAttribute("staffPosition", staffPosition);
+            response.sendRedirect("foAddEmployee2.jsp"); // Navigate to Step 2
+        }
 
-            case "3":
-                // Store personal info
-                employeeData.put("dateOfBirth", request.getParameter("dateOfBirth"));
-                employeeData.put("address", request.getParameter("address"));
-                employeeData.put("contactNumber", request.getParameter("contactNumber"));
-                employeeData.put("email", request.getParameter("email"));
-                employeeData.put("maritalStatus", request.getParameter("maritalStatus"));
-                employeeData.put("employmentType", request.getParameter("employmentType"));
-                request.getRequestDispatcher("foAddEmployee4.jsp").forward(request, response);
-                break;
+        // Handle Step 3: Personal Info
+        if ("3".equals(step)) {
+            String staffDOBStr = request.getParameter("staffDOB"); // String representation
+            String staffAddress = request.getParameter("staffAddress");
+            String staffPhoneNo = request.getParameter("staffPhoneNo");
+            String staffEmail = request.getParameter("staffEmail");
+            String staffMaritalStatus = request.getParameter("staffMaritalStatus");
+            String staffEmpType = request.getParameter("staffEmpType");
 
-            case "4":
-                // Store payment info
-                employeeData.put("bankName", request.getParameter("bankName"));
-                employeeData.put("bankAccountNumber", request.getParameter("bankAccountNumber"));
+            // Parse staffDOB from String to Date
+            Date staffDOB = parseDate(staffDOBStr);
+            session.setAttribute("staffDOB", staffDOB);
+            session.setAttribute("staffAddress", staffAddress);
+            session.setAttribute("staffPhoneNo", staffPhoneNo);
+            session.setAttribute("staffEmail", staffEmail);
+            session.setAttribute("staffMaritalStatus", staffMaritalStatus);
+            session.setAttribute("staffEmpType", staffEmpType);
+            response.sendRedirect("foAddEmployee4.jsp"); // Navigate to Step 4
+        }
 
-                // Process or save data (simulate by printing)
-                response.getWriter().println("Employee Data Submitted Successfully!");
-                for (String key : employeeData.keySet()) {
-                    response.getWriter().println(key + ": " + employeeData.get(key));
-                }
-                break;
+        // Handle Step 4: Payment Info
+        if ("4".equals(step)) {
+            String staffBank = request.getParameter("staffBank");
+            String staffAccNo = request.getParameter("staffAccNo");
+            session.setAttribute("staffBank", staffBank);
+            session.setAttribute("staffAccNo", staffAccNo);
 
-            default:
-                response.sendRedirect("foAddEmployee1.jsp");
+            // Save all data to the database
+            saveToDatabase(session);
+            response.sendRedirect("success.jsp"); // Redirect to a success page
+        }
+    }
+
+    private Date parseDate(String dateStr) {
+        if (dateStr == null || dateStr.isEmpty()) {
+            return null; // Handle empty or null date strings
+        }
+        try {
+            return DATE_FORMAT.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null; // Handle parse errors gracefully
+        }
+    }
+
+    private void saveToDatabase(HttpSession session) {
+        // Code to save data to the database using session attributes
+        // Example: Convert Date to SQL Date if needed before saving
+        java.util.Date staffDOB = (java.util.Date) session.getAttribute("staffDOB");
+        java.util.Date staffJoinedDate = (java.util.Date) session.getAttribute("staffJoinedDate");
+
+        if (staffDOB != null) {
+            java.sql.Date sqlStaffDOB = new java.sql.Date(staffDOB.getTime());
+            // Save sqlStaffDOB to the database
+        }
+
+        if (staffJoinedDate != null) {
+            java.sql.Date sqlStaffJoinedDate = new java.sql.Date(staffJoinedDate.getTime());
+            // Save sqlStaffJoinedDate to the database
         }
     }
 }

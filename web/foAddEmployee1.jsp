@@ -4,12 +4,24 @@
     Author     : user
 --%>
 
+<%@page import="java.sql.Date"%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    // Retrieve staffFullname from session
+    // Retrieve session attributes
     String staffFullname = (String) session.getAttribute("staffFullname");
+    String staffName = (String) session.getAttribute("staffName");
+    Date staffJoinedDate = (Date) session.getAttribute("staffJoinedDate"); // Change to Date
+    String staffGender = (String) session.getAttribute("staffGender");
+    String staffPosition = (String) session.getAttribute("staffPosition");
 
+    // Set default values if session attributes are null
+    if (staffFullname == null) staffFullname = "";
+    if (staffName == null) staffName = "";
+    if (staffJoinedDate == null) staffJoinedDate = null; // Set to null instead of empty string
+    if (staffGender == null) staffGender = "";
+    if (staffPosition == null) staffPosition = "";
 %>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -107,19 +119,31 @@
             background-color: #6a7199;
         }
         .container-main {
-            flex: 1; /* Allow the main content to take up the remaining space */
-            justify-content: center; /* Center horizontally */
-            padding: 20px; /* Add some padding */
+            flex: 1; /* Allow main content to expand */
+            display: flex;
+            flex-direction: column; /* Stack children vertically */
+            align-items: center; /* Center elements horizontally */
+            padding: 20px;
+            gap: 20px; /* Add space between children */
         }
         h1 {
             font-size: 24px;
             color: #2c2f48;
             margin-bottom: 20px;
         }
+        
+        h2 {
+            font-size: 24px;
+            color: #2c2f48;
+            margin: 0;
+            text-align: center;
+        }
         .steps {
             display: flex;
-            justify-content: space-around;
-            margin: 20px 0;
+            justify-content: center; /* Center navigation steps horizontally */
+            gap: 40px; /* Space between steps */
+            margin: 0;
+            width: 100%;
         }
 
         .step {
@@ -160,7 +184,8 @@
         }
 
         form {
-            width: 50%;
+            width: 100%; /* Take full width within container */
+            max-width: 500px; /* Limit form width */
             background: white;
             padding: 20px;
             border-radius: 8px;
@@ -183,7 +208,6 @@
         .button-container {
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
         }
         button {
             padding: 10px 20px;
@@ -221,7 +245,7 @@
 
         <!-- Main Content -->
         <div class="container-main">
-            <h1>Add New Employee</h1>
+            <h2>Step 1: Basics</h2>
             <!-- Navigation Steps -->
             <div class="steps">
                 <div class="step">
@@ -251,23 +275,26 @@
             </div>
 
             <!-- Form Section -->
-            <form action="AddEmployeeServlet" method="post">
+            <form action="foAddEmployee2.jsp" method="post">
                 <input type="hidden" name="step" value="1">
-                <label for="staffName">Staff Name</label>
-                <input type="text" id="staffName" name="staffName" required>
+                <label for="staffName">Staff Full Name</label>
+                <input type="text" id="staffFullname" name="staffFullname" value="" required>
+                
+                <label for="staffName">Staff Username</label>
+                <input type="text" id="staffName" name="staffName" value="" required>
 
-                <label for="joinedDate">Joined Date</label>
-                <input type="date" id="joinedDate" name="joinedDate" required>
+                <label for="staffJoinedDate">Joined Date</label>
+                <input type="date" id="staffJoinedDate" name="staffJoinedDate" value="<%= staffJoinedDate %>" required>
 
-                <label for="gender">Gender</label>
-                <select id="gender" name="gender" required>
-                    <option value="" disabled selected>Select Gender</option>
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                </select>
+                <label for="staffGender">Gender</label>
+                    <select id="staffGender" name="staffGender" required>
+                        <option value="" disabled <%= (staffGender == null || staffGender.isEmpty()) ? "selected" : "" %>>Select Gender</option>
+                        <option value="Male" <%= "Male".equals(staffGender) ? "selected" : "" %>>Male</option>
+                        <option value="Female" <%= "Female".equals(staffGender) ? "selected" : "" %>>Female</option>
+                    </select>
 
-                <label for="position">Position</label>
-                <input type="text" id="position" name="position" required>
+                <label for="staffPosition">Position</label>
+                <input type="text" id="staffPosition" name="staffPosition" value="<%= staffPosition %>" required>
 
                 <div class="button-container">
                     <button type="reset" class="cancel-btn">Cancel</button>
@@ -277,3 +304,4 @@
         </div>
     </div>
 </body>
+</html>

@@ -4,16 +4,45 @@
     Author     : user
 --%>
 
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="java.util.*" %>
+        <%
+            String staffFullname = (String) session.getAttribute("staffFullname");
+            String staffName = (String) session.getAttribute("staffName");
+            Date staffJoinedDate = (Date) session.getAttribute("staffJoinedDate");
+            String staffGender = (String) session.getAttribute("staffGender");
+            String staffPosition = (String) session.getAttribute("staffPosition");
+                    
+            if (staffFullname != null) session.setAttribute("staffFullname", staffFullname);
+            if (staffName != null) session.setAttribute("staffName", staffName);
+            if (staffJoinedDate != null) session.setAttribute("staffJoinedDate", staffJoinedDate);
+            if (staffGender != null) session.setAttribute("staffGender", staffGender);
+            if (staffPosition != null) session.setAttribute("staffPosition", staffPosition);
+
+            String salaryBasic = (String) session.getAttribute("salaryBasic");
+            String salaryDeduction = (String) session.getAttribute("salaryDeduction");
+            String salaryOvtRate = (String) session.getAttribute("salaryOvtRate");
+
+            if (salaryBasic == null) salaryBasic = "";
+            if (salaryDeduction == null) salaryDeduction = "";
+            if (salaryOvtRate == null) salaryOvtRate = "";
+        %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CC | Add New Employee</title>
+    <title>CC | Add New Employee - Step 2</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
+            padding: 0;
             background-color: #f4f4f9;
+            display: flex; /* Flex layout for the main content */
+            min-height: 100vh; /* Ensure full height */
+        }
+        .container {
+            display: flex;
+            width: 100%;
         }
         /* Sidebar Styling */
         .sidebar {
@@ -24,6 +53,7 @@
             flex-direction: column;
             align-items: center;
             padding: 20px;
+            flex-shrink: 0; /* Prevent shrinking of the sidebar */
         }
 
         .profile {
@@ -93,21 +123,32 @@
         .logout:hover {
             background-color: #6a7199;
         }
-        .container {
+        .container-main {
+            flex: 1; /* Allow main content to expand */
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            flex-direction: column; /* Stack children vertically */
+            align-items: center; /* Center elements horizontally */
             padding: 20px;
+            gap: 20px; /* Add space between children */
         }
         h1 {
             font-size: 24px;
             color: #2c2f48;
             margin-bottom: 20px;
         }
+        
+        h2 {
+            font-size: 24px;
+            color: #2c2f48;
+            margin: 0;
+            text-align: center;
+        }
         .steps {
             display: flex;
-            justify-content: space-around;
-            margin: 20px 0;
+            justify-content: center; /* Center navigation steps horizontally */
+            gap: 40px; /* Space between steps */
+            margin: 0;
+            width: 100%;
         }
 
         .step {
@@ -147,8 +188,9 @@
             color: white;
         }
 
-                form {
-            width: 50%;
+        form {
+            width: 100%; /* Take full width within container */
+            max-width: 500px; /* Limit form width */
             background: white;
             padding: 20px;
             border-radius: 8px;
@@ -171,9 +213,7 @@
         .button-container {
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
         }
-        
         button {
             padding: 10px 20px;
             border: none;
@@ -182,9 +222,7 @@
             cursor: pointer;
             background-color: #2c2f48;
         }
-        .save-btn {
-            background-color: #2c2f48;
-        }
+
         .cancel-btn {
             background-color: #aaa;
         }
@@ -195,54 +233,71 @@
 </head>
 <body>
     <div class="container">
-        <h2>Step 2: Salary Details</h2>
-
-        <!-- Navigation Steps -->
-        <div class="steps">
-            <div class="step">
-                <a href="foAddEmployee1.jsp">
-                    <div class="circle">1</div>
-                </a>
-                <div class="step-title">Basics</div>
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile">
+                <div class="profile-pic"></div>
+                <p class="profile-name"><%= staffFullname %></p>
             </div>
-            <div class="step">
-                <a href="foAddEmployee2.jsp">
-                    <div class="circle active">2</div>
-                </a>
-                <div class="step-title">Salary Details</div>
-            </div>
-            <div class="step">
-                <a href="foAddEmployee3.jsp">
-                    <div class="circle">3</div>
-                </a>
-                <div class="step-title">Personal Info</div>
-            </div>
-            <div class="step">
-                <a href="foAddEmployee4.jsp">
-                    <div class="circle">4</div>
-                </a>
-                <div class="step-title">Payment Info</div>
-            </div>
+            <ul class="nav-links">
+                <li><a href="foDashboard.jsp">Home</a></li>
+                <li><a href="EmployeeListServlet" class="active">Employees</a></li>
+                <li><a href="foApprovals.jsp">Approvals</a></li>
+                <li><a href="foReports.jsp">Reports</a></li>
+            </ul>
+            <a href="logout.jsp" class="logout">Logout</a>
         </div>
 
-        <form action="AddEmployeeServlet" method="post">
-            <input type="hidden" name="step" value="2">
-            <label>Basic Salary:</label>
-            <input type="number" name="basicSalary" required><br>
+        <!-- Main Content -->
+        <div class="container-main">
+            <h2>Step 2: Salary Details</h2>
 
-            <label>Deductions:</label>
-            <input type="number" name="deductions" required><br>
-
-            <label>Overtime Rate:</label>
-            <input type="number" name="overtimeRate" required><br>
-
-            <div class="button-container">
-                <!--<button type="button" class="cancel-btn" onclick="window.location.href='CancelPage.jsp'">Cancel</button> -->
-                <button type="reset" class="cancel-btn">Cancel</button>
-                <button type="submit">Next</button>
+            <!-- Navigation Steps -->
+            <div class="steps">
+                <div class="step">
+                    <a href="foAddEmployee1.jsp">
+                        <div class="circle">1</div>
+                    </a>
+                    <div class="step-title">Basics</div>
+                </div>
+                <div class="step">
+                    <a href="foAddEmployee2.jsp">
+                        <div class="circle active">2</div>
+                    </a>
+                    <div class="step-title">Salary Details</div>
+                </div>
+                <div class="step">
+                    <a href="foAddEmployee3.jsp">
+                        <div class="circle">3</div>
+                    </a>
+                    <div class="step-title">Personal Info</div>
+                </div>
+                <div class="step">
+                    <a href="foAddEmployee4.jsp">
+                        <div class="circle">4</div>
+                    </a>
+                    <div class="step-title">Payment Info</div>
+                </div>
             </div>
-        </form>
+
+            <!-- Form -->
+            <form action="foAddEmployee3.jsp" method="post">
+                <input type="hidden" name="step" value="2">
+                <label for="salaryBasic">Basics:</label>
+                <input type="number" id="salaryBasic" name="salaryBasic" value="<%= salaryBasic %>" required><br>
+
+                <label for="salaryDeduction">Deductions:</label>
+                <input type="number" id="salaryDeduction" name="salaryDeduction" value="<%= salaryDeduction %>" required><br>
+
+                <label for="salaryOvtRate">Overtime Rate:</label>
+                <input type="number" id="salaryOvtRate" name="salaryOvtRate" value="<%= salaryOvtRate %>" required><br>
+
+                <div class="button-container">
+                    <button type="button" onclick="window.history.back()">Back</button>
+                    <button type="submit">Next</button>
+                </div>
+            </form>
+        </div>
     </div>
 </body>
 </html>
-

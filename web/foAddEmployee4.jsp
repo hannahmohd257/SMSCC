@@ -4,16 +4,46 @@
     Author     : user
 --%>
 
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="java.util.*" %>
+<%
+    String staffFullname = (String) session.getAttribute("staffFullname");
+    Date staffDOB = (Date) session.getAttribute("staffDOB");
+    String staffAddress = (String) session.getAttribute("staffAddress");
+    String staffPhoneNo = request.getParameter("staffPhoneNo");
+    String staffEmail = request.getParameter("staffEmail");
+    String staffMaritalStatus = request.getParameter("staffMaritalStatus");
+    String staffEmpType = request.getParameter("staffEmpType");
+
+    if (staffDOB != null) session.setAttribute("staffDOB", staffDOB);
+    if (staffAddress != null) session.setAttribute("staffAddress", staffAddress);
+    if (staffPhoneNo != null) session.setAttribute("staffPhoneNo", staffPhoneNo);
+    if (staffEmail != null) session.setAttribute("staffEmail", staffEmail);
+    if (staffMaritalStatus != null) session.setAttribute("staffMaritalStatus", staffMaritalStatus);
+    if (staffEmpType != null) session.setAttribute("staffEmpType", staffEmpType);
+    
+    String staffBank = request.getParameter("staffBank");
+    String staffAccNo = request.getParameter("staffAccNo");
+    
+    if (staffBank == null) staffBank = "";
+    if (staffAccNo == null) staffAccNo = "";
+%>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CC | Add New Employee</title>
+    <title>CC | Add New Employee - Step 4</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
+            padding: 0;
             background-color: #f4f4f9;
+            display: flex; /* Flex layout for the main content */
+            min-height: 100vh; /* Ensure full height */
+        }
+        .container {
+            display: flex;
+            width: 100%;
         }
         /* Sidebar Styling */
         .sidebar {
@@ -24,6 +54,7 @@
             flex-direction: column;
             align-items: center;
             padding: 20px;
+            flex-shrink: 0; /* Prevent shrinking of the sidebar */
         }
 
         .profile {
@@ -93,21 +124,32 @@
         .logout:hover {
             background-color: #6a7199;
         }
-        .container {
+        .container-main {
+            flex: 1; /* Allow main content to expand */
             display: flex;
-            flex-direction: column;
-            align-items: center;
+            flex-direction: column; /* Stack children vertically */
+            align-items: center; /* Center elements horizontally */
             padding: 20px;
+            gap: 20px; /* Add space between children */
         }
         h1 {
             font-size: 24px;
             color: #2c2f48;
             margin-bottom: 20px;
         }
+        
+        h2 {
+            font-size: 24px;
+            color: #2c2f48;
+            margin: 0;
+            text-align: center;
+        }
         .steps {
             display: flex;
-            justify-content: space-around;
-            margin: 20px 0;
+            justify-content: center; /* Center navigation steps horizontally */
+            gap: 40px; /* Space between steps */
+            margin: 0;
+            width: 100%;
         }
 
         .step {
@@ -147,8 +189,9 @@
             color: white;
         }
 
-                form {
-            width: 50%;
+        form {
+            width: 100%; /* Take full width within container */
+            max-width: 500px; /* Limit form width */
             background: white;
             padding: 20px;
             border-radius: 8px;
@@ -167,10 +210,10 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
+
         .button-container {
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
         }
         button {
             padding: 10px 20px;
@@ -180,9 +223,7 @@
             cursor: pointer;
             background-color: #2c2f48;
         }
-        .save-btn {
-            background-color: #2c2f48;
-        }
+
         .cancel-btn {
             background-color: #aaa;
         }
@@ -193,50 +234,70 @@
 </head>
 <body>
     <div class="container">
-        <h2>Step 4: Payment Info</h2>
-
-        <!-- Navigation Steps -->
-        <div class="steps">
-            <div class="step">
-                <a href="foAddEmployee1.jsp">
-                    <div class="circle">1</div>
-                </a>
-                <div class="step-title">Basics</div>
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile">
+                <div class="profile-pic"></div>
+                <p class="profile-name"><%= staffFullname %></p>
             </div>
-            <div class="step">
-                <a href="foAddEmployee2.jsp">
-                    <div class="circle">2</div>
-                </a>
-                <div class="step-title">Salary Details</div>
-            </div>
-            <div class="step">
-                <a href="foAddEmployee3.jsp">
-                    <div class="circle">3</div>
-                </a>
-                <div class="step-title">Personal Info</div>
-            </div>
-            <div class="step">
-                <a href="foAddEmployee4.jsp">
-                    <div class="circle active">4</div>
-                </a>
-                <div class="step-title">Payment Info</div>
-            </div>
+            <ul class="nav-links">
+                <li><a href="foDashboard.jsp">Home</a></li>
+                <li><a href="EmployeeListServlet" class="active">Employees</a></li>
+                <li><a href="foApprovals.jsp">Approvals</a></li>
+                <li><a href="foReports.jsp">Reports</a></li>
+            </ul>
+            <a href="logout.jsp" class="logout">Logout</a>
         </div>
 
-        <form action="AddEmployeeServlet" method="post">
-            <input type="hidden" name="step" value="4">
-            <label>Bank Name:</label>
-            <input type="text" name="bankName" required><br>
+        <!-- Main Content -->
+        <div class="container-main">
+            <h2>Step 4: Payment Info</h2>
 
-            <label>Bank Account Number:</label>
-            <input type="text" name="bankAccountNumber" required><br>
-            <div class="button-container">
-                <!--<button type="button" class="cancel-btn" onclick="window.location.href='CancelPage.jsp'">Cancel</button> -->
-                <button type="reset" class="cancel-btn">Cancel</button>
-                <button type="submit">Save</button>
+            <!-- Navigation Steps -->
+            <div class="steps">
+                <div class="step">
+                    <a href="foAddEmployee1.jsp">
+                        <div class="circle">1</div>
+                    </a>
+                    <div class="step-title">Basics</div>
+                </div>
+                <div class="step">
+                    <a href="foAddEmployee2.jsp">
+                        <div class="circle">2</div>
+                    </a>
+                    <div class="step-title">Salary Details</div>
+                </div>
+                <div class="step">
+                    <a href="foAddEmployee3.jsp">
+                        <div class="circle">3</div>
+                    </a>
+                    <div class="step-title">Personal Info</div>
+                </div>
+                <div class="step">
+                    <a href="foAddEmployee4.jsp">
+                        <div class="circle active">4</div>
+                    </a>
+                    <div class="step-title">Payment Info</div>
+                </div>
             </div>
-        </form>
+
+            <!-- Form -->
+            <form action="AddEmployeeServlet" method="post">
+                <input type="hidden" name="step" value="4">
+                <label for="staffBank">Bank Name:</label>
+                <input type="text" id="staffBank" name="staffBank" value="<%= staffBank %>" required><br>
+
+                <label for="staffAccNo">Bank Account:</label>
+                <input type="text" id="staffAccNo" name="staffAccNo" value="<%= staffAccNo %>" required><br>
+
+                <div class="button-container">
+                    <button type="button" onclick="window.history.back()">Back</button>
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
     </div>
 </body>
 </html>
+
 
