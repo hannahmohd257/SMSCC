@@ -1,20 +1,21 @@
 <%-- 
-    Document   : foEmployees
-    Created on : 16 Jan 2025, 2:00:52 am
+    Document   : foEmpSalaryDetails
+    Created on : 17 Jan 2025, 1:31:18 am
     Author     : user
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     // Retrieve staffFullname from session
     String staffFullname = (String) session.getAttribute("staffFullname");
 
 %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>CC | Employee List</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CC | Employee Salary Details</title>
     <style>
         body {
             margin: 0;
@@ -44,7 +45,7 @@
             margin-bottom: 20px;
             display: flex;
             flex-direction: column;
-            align-items: center;  /* Center content horizontally */
+            align-items: center;
         }
 
         .profile-pic {
@@ -59,9 +60,7 @@
             font-size: 18px;
             margin: 0;
             font-weight: bold;
-            text-align: center;  /* Ensure the name is centered */
         }
-
 
         .nav-links {
             list-style: none;
@@ -102,7 +101,7 @@
         .logout:hover {
             background-color: #6a7199;
         }
-        
+
         /* Main Content Styling */
         .content {
             flex-grow: 1;
@@ -122,46 +121,67 @@
             color: #4a4f77;
         }
 
-        .container-list {
-            display: flex;
-            justify-content: center;  /* Center horizontally */
-            align-items: flex-start;  /* Align items to the top */
-            width: 100%;
-            margin-left: 250px;  /* Offset the sidebar */
+        .section {
+            background-color: #e1e1e1;
             padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        table {
-            width: 100%;
-            max-width: 1055px;  /* Optional: to avoid the table stretching too much */
-            border-collapse: collapse;
-            margin: 0 auto;  /* This ensures the table is centered */
+        .section h2 {
+            font-size: 18px;
+            color: #2c2f48;
+            margin: 0;
+        }
+        
+        .section h3 {
+            font-size: 16px;
+            color: #2c2f48;
+            margin: 0;
         }
 
+        .section p {
+            margin: 5px 0;
+            font-size: 16px;
+            color: #333;
+        }
 
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
-        }
-        th {
-            background-color: #2c2f48;
-            color: white;
-        }
-        .add-button {
-            float: right;
-            text-decoration: none;
-            background-color: #4a4f77;
-            color: white;
+        .section button {
             padding: 10px 20px;
             font-size: 14px;
+            color: #fff;
+            background-color: #4a4f77;
+            border: none;
             border-radius: 5px;
-            margin-top: -10px;
+            cursor: pointer;
             transition: background-color 0.3s;
         }
 
-        .add-button:hover {
+        .section button:hover {
             background-color: #6a7199;
+        }
+        .tabs a {
+            text-decoration: none;
+            color: #4a4f77;
+            padding: 5px 10px;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .tabs a:hover {
+            background-color: #e1e1e1;
+            color: #2c2f48;
+            border-radius: 5px;
+        }
+
+        .tabs a.active {
+            background-color: #4a4f77;
+            color: white;
+            border-radius: 5px;
         }
 
     </style>
@@ -169,47 +189,51 @@
 <body>
     <div class="container">
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <div class="sidebar">
             <div class="profile">
                 <div class="profile-pic"></div>
                 <p class="profile-name"><%= staffFullname %></p>
             </div>
             <ul class="nav-links">
-                <li><a href="foDashboard.jsp">Home</a></li>
-                <li><a href="EmployeeListServlet"  class="active">Employees</a></li>
+                <li><a href="foDashboard.jsp" class="active">Home</a></li>
+                <li><a href="EmployeeListServlet">Employees</a></li>
                 <li><a href="foApprovals.jsp">Approvals</a></li>
                 <li><a href="foReports.jsp">Reports</a></li>
             </ul>
             <a href="logout.jsp" class="logout">Logout</a>
-        </aside>
-    
+        </div>
 
-        <main class="content">
+        <!-- Main Content -->
+        <div class="content">
             <div class="header">
-                <h2 style="display: inline-block;">Employees</h2>
-                <a href="foAddEmployee1.jsp" class="add-button">Add New Employee</a>
+                <h1>Employee: <span class="name">Staff Name</span></h1>
+                <h2>Staff ID: xxxxx</h2>
             </div>
-            <table>
-                <thead>
-                <tr>
-                    <th>Staff ID</th>
-                    <th>Full Name</th>
-                    <th>Email</th>
-                    <th>Position</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach var="employee" items="${employeeList}">
-                    <tr>
-                        <td>${employee.staffID}</td>
-                        <td><a href="foEmpOverview.jsp?staffID=${employee.staffID}">${employee.staffFullname}</a></td>
-                        <td>${employee.staffEmail}</td>
-                        <td>${employee.staffPosition}</td>
-                    </tr>
-                </c:forEach>
-                </tbody>
-            </table>
-        </main>
+
+            <div class="tabs">
+                <a href="foEmpOverview.jsp">Overview</a> |
+                <a href="foEmpSalaryDetails.jsp"  class="active">Salary Details</a> |
+                <a href="foEmpPayslip.jsp">Payslips</a>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div>
+                    <h3>Salary Components</h3>
+                        <p>Basic</p>
+                        <p>Overtime</p>
+                        <p>Deductions</p>
+                        <p>Net Pay</p>
+                </div>
+                <div>
+                    <h3>Monthly Amount</h3>
+                    <!-- You can add the values of the monthly amounts here, e.g. -->
+                    <p>RM3500</p>
+                    <p>RM500</p>
+                    <p>-RM100</p>
+                    <p>RM3900</p>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
+

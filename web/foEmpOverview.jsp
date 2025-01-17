@@ -1,20 +1,21 @@
 <%-- 
-    Document   : foEmployees
-    Created on : 16 Jan 2025, 2:00:52 am
+    Document   : foEmpOverview
+    Created on : 16 Jan 2025, 3:48:01 am
     Author     : user
 --%>
 
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     // Retrieve staffFullname from session
     String staffFullname = (String) session.getAttribute("staffFullname");
 
 %>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>CC | Employee List</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CC | Employee Overview</title>
     <style>
         body {
             margin: 0;
@@ -44,7 +45,7 @@
             margin-bottom: 20px;
             display: flex;
             flex-direction: column;
-            align-items: center;  /* Center content horizontally */
+            align-items: center;
         }
 
         .profile-pic {
@@ -59,9 +60,7 @@
             font-size: 18px;
             margin: 0;
             font-weight: bold;
-            text-align: center;  /* Ensure the name is centered */
         }
-
 
         .nav-links {
             list-style: none;
@@ -102,7 +101,7 @@
         .logout:hover {
             background-color: #6a7199;
         }
-        
+
         /* Main Content Styling */
         .content {
             flex-grow: 1;
@@ -122,46 +121,76 @@
             color: #4a4f77;
         }
 
-        .container-list {
+        /* Employee Details Section */
+        .employee-details {
             display: flex;
-            justify-content: center;  /* Center horizontally */
-            align-items: flex-start;  /* Align items to the top */
-            width: 100%;
-            margin-left: 250px;  /* Offset the sidebar */
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .employee-card {
+            background-color: #e1e1e1;
+            border-radius: 10px;
             padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 250px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        table {
-            width: 100%;
-            max-width: 1055px;  /* Optional: to avoid the table stretching too much */
-            border-collapse: collapse;
-            margin: 0 auto;  /* This ensures the table is centered */
+        .employee-card img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background-color: #d3d3d3;
+            margin-bottom: 10px;
         }
 
+        .employee-info {
+            margin: 0;
+            font-size: 14px;
+            color: #333;
+            text-align: center;
+        }
 
-        th, td {
-            padding: 10px;
-            text-align: left;
-            border-bottom: 1px solid #ddd;
+        .personal-details {
+            background-color: #e1e1e1;
+            border-radius: 10px;
+            padding: 20px;
+            flex-grow: 1;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
-        th {
-            background-color: #2c2f48;
-            color: white;
+
+        .personal-details h3 {
+            margin-top: 0;
+            font-size: 18px;
+            color: #2c2f48;
         }
-        .add-button {
-            float: right;
+
+        .personal-details p {
+            margin: 5px 0;
+            font-size: 14px;
+            color: #333;
+        }
+        .tabs a {
             text-decoration: none;
+            color: #4a4f77;
+            padding: 5px 10px;
+            font-weight: bold;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        .tabs a:hover {
+            background-color: #e1e1e1;
+            color: #2c2f48;
+            border-radius: 5px;
+        }
+
+        .tabs a.active {
             background-color: #4a4f77;
             color: white;
-            padding: 10px 20px;
-            font-size: 14px;
             border-radius: 5px;
-            margin-top: -10px;
-            transition: background-color 0.3s;
-        }
-
-        .add-button:hover {
-            background-color: #6a7199;
         }
 
     </style>
@@ -169,47 +198,52 @@
 <body>
     <div class="container">
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <div class="sidebar">
             <div class="profile">
                 <div class="profile-pic"></div>
                 <p class="profile-name"><%= staffFullname %></p>
             </div>
             <ul class="nav-links">
                 <li><a href="foDashboard.jsp">Home</a></li>
-                <li><a href="EmployeeListServlet"  class="active">Employees</a></li>
+                <li><a href="EmployeeListServlet" class="active">Employees</a></li>
                 <li><a href="foApprovals.jsp">Approvals</a></li>
                 <li><a href="foReports.jsp">Reports</a></li>
             </ul>
             <a href="logout.jsp" class="logout">Logout</a>
-        </aside>
-    
+        </div>
 
-        <main class="content">
+        <!-- Main Content -->
+        <div class="content">
             <div class="header">
-                <h2 style="display: inline-block;">Employees</h2>
-                <a href="foAddEmployee1.jsp" class="add-button">Add New Employee</a>
+                <h1>Employee: <span class="name">Staff Name</span></h1>
+                <h2>Staff ID: xxxxx</h2>
             </div>
-            <table>
-                <thead>
-                <tr>
-                    <th>Staff ID</th>
-                    <th>Full Name</th>
-                    <th>Email</th>
-                    <th>Position</th>
-                </tr>
-                </thead>
-                <tbody>
-                <c:forEach var="employee" items="${employeeList}">
-                    <tr>
-                        <td>${employee.staffID}</td>
-                        <td><a href="foEmpOverview.jsp?staffID=${employee.staffID}">${employee.staffFullname}</a></td>
-                        <td>${employee.staffEmail}</td>
-                        <td>${employee.staffPosition}</td>
-                    </tr>
-                </c:forEach>
-                </tbody>
-            </table>
-        </main>
+
+            <div class="tabs">
+                <a href="foEmpOverview.jsp" class="active">Overview</a> |
+                <a href="foEmpSalaryDetails.jsp">Salary Details</a> |
+                <a href="foEmpPayslip.jsp">Payslips</a>
+            </div>
+
+
+            <div class="employee-details">
+                <div class="employee-card">
+                    <img src="#" alt="Profile Picture">
+                    <p class="employee-info">Name: Staff 1</p>
+                    <p class="employee-info">Age: xx</p>
+                    <p class="employee-info">Position: xxxx</p>
+                </div>
+                <div class="personal-details">
+                    <h3>Personal Details</h3>
+                    <p>First Name: </p>
+                    <p>Last Name: </p>
+                    <p>Phone Number: </p>
+                    <p>Date of Birth: </p>
+                    <p>Personal Email: </p>
+                    <p>Residential Area: </p>
+                </div>
+            </div>
+        </div>
     </div>
 </body>
 </html>
