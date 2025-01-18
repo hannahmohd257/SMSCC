@@ -19,13 +19,15 @@ public enum Role {
         return value;
     }
 
+    // Add a method to get the enum from a numeric value
     public static Role fromValue(int value) {
-        for (Role staffRole : Role.values()) {
-            if (staffRole.value == value) {
-                return staffRole;
+        for (Role role : Role.values()) {
+            if (role.value == value) {
+                return role;
             }
         }
-        return GENERAL_STAFF; // Default role
+        throw new IllegalArgumentException("Invalid Role value: " + value);
     }
 }
+
 

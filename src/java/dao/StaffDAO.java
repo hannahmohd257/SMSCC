@@ -94,7 +94,7 @@ public class StaffDAO {
         return employees;
     }
     
-    public boolean saveStaff(Staff staff) throws SQLException {
+    public int saveStaff(Staff staff) throws SQLException {
         String query = "INSERT INTO staff (staffFullname, staffName, staffJoinedDate, staffGender, staffPosition, staffAddress, staffPhoneno, staffEmail, staffMaritalStatus, staffEmpType, staffBank, staffAccNo, staffDOB, staffPassword, staffRole) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
         try (Connection connection = DBConnection.getConnection();
@@ -119,48 +119,19 @@ public class StaffDAO {
 
             // Execute the query
             int affectedRows = statement.executeUpdate();
-                return affectedRows > 0;  // Return true if at least one row was inserted
-            } catch (SQLException e) {
-                // Handle database exceptions
-                e.printStackTrace();
-                return false;  // Return false in case of error
+        if (affectedRows == 0) {
+            throw new SQLException("Failed to insert staff, no rows affected.");
+        }
+
+        try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+            if (generatedKeys.next()) {
+                return generatedKeys.getInt(1); // Return the generated staffID
+            } else {
+                throw new SQLException("Failed to insert staff, no ID obtained.");
             }
-    }
-    
-    private boolean saveEmployee(String staffFullname, String staffName, Date staffJoinedDate,
-        String staffGender, String staffPosition, double salaryBasic, 
-        double salaryDeduction, double salaryOvtRate, Role staffRole,
-        String staffPassword, Date staffDOB, String staffAddress,
-        String staffPhoneNo, String staffEmail, String staffMaritalStatus,
-        String staffEmpType, String staffBank, String staffAccNo) {
+        }
         
-    
-        try {
-            // Create a Staff object with the form data
-            Staff staff = new Staff();
-            staff.setStaffFullname(staffFullname);
-            staff.setStaffName(staffName);
-            staff.setStaffJoinedDate(new java.util.Date(staffJoinedDate.getTime()));
-            staff.setStaffGender(staffGender);
-            staff.setStaffPosition(staffPosition);
-            staff.setStaffAddress(staffAddress);
-            staff.setStaffPhoneno(staffPhoneNo);
-            staff.setStaffEmail(staffEmail);
-            staff.setStaffMaritalStatus(staffMaritalStatus);
-            staff.setStaffEmpType(staffEmpType);
-            staff.setStaffBank(staffBank);
-            staff.setStaffAccNo(staffAccNo);
-            staff.setStaffDOB(new java.util.Date(staffDOB.getTime()));
-            staff.setStaffPassword(staffPassword);
-            staff.setStaffRole(staffRole);
-
-            // Create StaffDAO and save the staff
-            StaffDAO staffDAO = new StaffDAO();
-            return staffDAO.saveStaff(staff);
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            return false;
         }
     }
+    
 }

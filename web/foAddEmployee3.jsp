@@ -262,9 +262,9 @@
                 <label for="staffRole">Role:</label>
                 <select id="staffRole" name="staffRole" required>
                     <option value="">Select a role</option>
-                    <option value="GENERAL_STAFF" ${sessionScope.staffRole == 'GENERAL_STAFF' ? 'selected' : ''}>General Staff</option>
-                    <option value="FINANCE_OFFICER" ${sessionScope.staffRole == 'FINANCE_OFFICER' ? 'selected' : ''}>Finance Officer</option>
-                    <option value="MANAGER" ${sessionScope.staffRole == 'MANAGER' ? 'selected' : ''}>Manager</option>
+                    <option value="1" ${sessionScope.staffRole == 'GENERAL_STAFF' ? 'selected' : ''}>General Staff</option>
+                    <option value="2" ${sessionScope.staffRole == 'FINANCE_OFFICER' ? 'selected' : ''}>Finance Officer</option>
+                    <option value="3" ${sessionScope.staffRole == 'MANAGER' ? 'selected' : ''}>Manager</option>
                 </select>
 
                 <label>Password:</label>
