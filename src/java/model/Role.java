@@ -20,11 +20,12 @@ public enum Role {
     }
 
     public static Role fromValue(int value) {
-        for (Role role : Role.values()) {
-            if (role.value == value) {
-                return role;
+        for (Role staffRole : Role.values()) {
+            if (staffRole.value == value) {
+                return staffRole;
             }
         }
-        throw new IllegalArgumentException("Invalid role value: " + value);
+        return GENERAL_STAFF; // Default role
     }
 }
+

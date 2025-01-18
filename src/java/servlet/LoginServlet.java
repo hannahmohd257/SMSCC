@@ -24,12 +24,17 @@ public class LoginServlet extends HttpServlet {
             throws ServletException, IOException {
         int staffID = Integer.parseInt(request.getParameter("staffID"));
         String staffPassword = request.getParameter("staffPassword");
-        String roleValue = request.getParameter("role");
+        String staffRoleValue = request.getParameter("staffRole");
 
         try {
             // Parse the role value and validate credentials
-            Role role = Role.fromValue(Integer.parseInt(roleValue)); // Convert role to enum
-            boolean isValid = staffDAO.validateStaffCredentials(staffID, staffPassword, role);
+            Role staffRole = Role.fromValue(Integer.parseInt(staffRoleValue)); // Convert role to enum
+            boolean isValid = staffDAO.validateStaffCredentials(staffID, staffPassword, staffRole);
+
+            HttpSession session = request.getSession();
+            session.invalidate(); // Clear old session
+            session = request.getSession(true); // Create new session
+            session.setAttribute("staffRole", "FINANCE_OFFICER"); // Set necessary attributes
 
             if (isValid) {
                 // Retrieve the staff details from the database
@@ -38,13 +43,12 @@ public class LoginServlet extends HttpServlet {
 
                 if (staff != null) {
                     // Save staff information in the session
-                    HttpSession session = request.getSession();
                     session.setAttribute("staffName", staff.getStaffName()); // Retrieved staffName
                     session.setAttribute("staffFullname", staff.getStaffFullname()); // Retrieved staffFullname
-                    session.setAttribute("role", staff.getRole());
+                    session.setAttribute("staffRole", staff.getStaffRole());
 
                     // Redirect to the appropriate dashboard based on the role
-                    switch (role) {
+                    switch (staffRole) {
                         case GENERAL_STAFF:
                             response.sendRedirect("staffDashboard.jsp");
                             break;

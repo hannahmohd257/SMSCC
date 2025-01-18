@@ -10,7 +10,7 @@ import java.util.Date;
 public class Staff {
     private int staffID;
     private String staffPassword;
-    private Role role;
+    private Role staffRole;
     private String staffName;
     private String staffFullname;
     private String staffEmail;
@@ -26,13 +26,13 @@ public class Staff {
     private String staffAccNo;
 
     // Constructor
-    public Staff(int staffID, String staffPassword, Role role, String staffName, String staffFullname, 
+    public Staff(int staffID, String staffPassword, Role staffRole, String staffName, String staffFullname, 
                  String staffEmail, String staffPosition, String staffPhoneno, String staffAddress, 
                  Date staffJoinedDate, String staffGender, Date staffDOB, String staffMaritalStatus, 
                  String staffEmpType, String staffBank, String staffAccNo) {
         this.staffID = staffID;
         this.staffPassword = staffPassword;
-        this.role = role;
+        this.staffRole = staffRole;
         this.staffName = staffName;
         this.staffFullname = staffFullname;
         this.staffEmail = staffEmail;
@@ -68,12 +68,12 @@ public class Staff {
         this.staffPassword = staffPassword;
     }
 
-    public Role getRole() {
-        return role;
+    public Role getStaffRole() {
+        return staffRole;
     }
 
-    public void setRole(Role role) {
-        this.role = role;
+    public void setStaffRole(Role staffRole) {
+        this.staffRole = staffRole;
     }
 
     public String getStaffName() {
@@ -187,7 +187,7 @@ public class Staff {
         return "Staff{" +
                 "staffID=" + staffID +
                 ", staffPassword='" + staffPassword + '\'' +
-                ", role=" + role +
+                ", staffRole=" + staffRole +
                 ", staffName='" + staffName + '\'' +
                 ", staffFullname='" + staffFullname + '\'' +
                 ", staffEmail='" + staffEmail + '\'' +

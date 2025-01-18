@@ -4,29 +4,11 @@
     Author     : user
 --%>
 
+<%@page import="model.Role"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.*" %>
 <%
-    String staffFullname = (String) session.getAttribute("staffFullname");
-    Date staffDOB = (Date) session.getAttribute("staffDOB");
-    String staffAddress = (String) session.getAttribute("staffAddress");
-    String staffPhoneNo = request.getParameter("staffPhoneNo");
-    String staffEmail = request.getParameter("staffEmail");
-    String staffMaritalStatus = request.getParameter("staffMaritalStatus");
-    String staffEmpType = request.getParameter("staffEmpType");
-
-    if (staffDOB != null) session.setAttribute("staffDOB", staffDOB);
-    if (staffAddress != null) session.setAttribute("staffAddress", staffAddress);
-    if (staffPhoneNo != null) session.setAttribute("staffPhoneNo", staffPhoneNo);
-    if (staffEmail != null) session.setAttribute("staffEmail", staffEmail);
-    if (staffMaritalStatus != null) session.setAttribute("staffMaritalStatus", staffMaritalStatus);
-    if (staffEmpType != null) session.setAttribute("staffEmpType", staffEmpType);
-    
-    String staffBank = request.getParameter("staffBank");
-    String staffAccNo = request.getParameter("staffAccNo");
-    
-    if (staffBank == null) staffBank = "";
-    if (staffAccNo == null) staffAccNo = "";
+    String staffFullname = request.getParameter("staffFullname");
 %>
 <!DOCTYPE html>
 <html>
@@ -238,7 +220,7 @@
         <div class="sidebar">
             <div class="profile">
                 <div class="profile-pic"></div>
-                <p class="profile-name"><%= staffFullname %></p>
+                <p class="profile-name"><%= staffFullname != null ? staffFullname : "Finance Officer" %></p>
             </div>
             <ul class="nav-links">
                 <li><a href="foDashboard.jsp">Home</a></li>
@@ -256,27 +238,19 @@
             <!-- Navigation Steps -->
             <div class="steps">
                 <div class="step">
-                    <a href="foAddEmployee1.jsp">
-                        <div class="circle">1</div>
-                    </a>
+                    <div class="circle">1</div>
                     <div class="step-title">Basics</div>
                 </div>
                 <div class="step">
-                    <a href="foAddEmployee2.jsp">
-                        <div class="circle">2</div>
-                    </a>
+                    <div class="circle">2</div>
                     <div class="step-title">Salary Details</div>
                 </div>
                 <div class="step">
-                    <a href="foAddEmployee3.jsp">
-                        <div class="circle">3</div>
-                    </a>
+                    <div class="circle">3</div>
                     <div class="step-title">Personal Info</div>
                 </div>
                 <div class="step">
-                    <a href="foAddEmployee4.jsp">
-                        <div class="circle active">4</div>
-                    </a>
+                    <div class="circle active">4</div>
                     <div class="step-title">Payment Info</div>
                 </div>
             </div>
@@ -284,11 +258,20 @@
             <!-- Form -->
             <form action="AddEmployeeServlet" method="post">
                 <input type="hidden" name="step" value="4">
+
+                <% if(request.getAttribute("error") != null) { %>
+                    <div class="error-message">
+                        <%= request.getAttribute("error") %>
+                    </div>
+                <% } %>
+
                 <label for="staffBank">Bank Name:</label>
-                <input type="text" id="staffBank" name="staffBank" value="<%= staffBank %>" required><br>
+                <input type="text" id="staffBank" name="staffBank" 
+                    value="${sessionScope.staffBank}" required><br>
 
                 <label for="staffAccNo">Bank Account:</label>
-                <input type="text" id="staffAccNo" name="staffAccNo" value="<%= staffAccNo %>" required><br>
+                <input type="text" id="staffAccNo" name="staffAccNo" 
+                    value="${sessionScope.staffAccNo}" required><br>
 
                 <div class="button-container">
                     <button type="button" onclick="window.history.back()">Back</button>
@@ -299,5 +282,3 @@
     </div>
 </body>
 </html>
-
-

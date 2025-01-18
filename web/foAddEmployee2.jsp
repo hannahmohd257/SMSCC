@@ -6,27 +6,9 @@
 
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.*" %>
-        <%
-            String staffFullname = (String) session.getAttribute("staffFullname");
-            String staffName = (String) session.getAttribute("staffName");
-            Date staffJoinedDate = (Date) session.getAttribute("staffJoinedDate");
-            String staffGender = (String) session.getAttribute("staffGender");
-            String staffPosition = (String) session.getAttribute("staffPosition");
-                    
-            if (staffFullname != null) session.setAttribute("staffFullname", staffFullname);
-            if (staffName != null) session.setAttribute("staffName", staffName);
-            if (staffJoinedDate != null) session.setAttribute("staffJoinedDate", staffJoinedDate);
-            if (staffGender != null) session.setAttribute("staffGender", staffGender);
-            if (staffPosition != null) session.setAttribute("staffPosition", staffPosition);
-
-            String salaryBasic = (String) session.getAttribute("salaryBasic");
-            String salaryDeduction = (String) session.getAttribute("salaryDeduction");
-            String salaryOvtRate = (String) session.getAttribute("salaryOvtRate");
-
-            if (salaryBasic == null) salaryBasic = "";
-            if (salaryDeduction == null) salaryDeduction = "";
-            if (salaryOvtRate == null) salaryOvtRate = "";
-        %>
+<%
+    String staffFullname = request.getParameter("staffFullname");
+%>
 <!DOCTYPE html>
 <html>
 <head>
@@ -237,7 +219,7 @@
         <div class="sidebar">
             <div class="profile">
                 <div class="profile-pic"></div>
-                <p class="profile-name"><%= staffFullname %></p>
+                <p class="profile-name"><%= staffFullname != null ? staffFullname : "Finance Officer" %></p>
             </div>
             <ul class="nav-links">
                 <li><a href="foDashboard.jsp">Home</a></li>
@@ -255,42 +237,38 @@
             <!-- Navigation Steps -->
             <div class="steps">
                 <div class="step">
-                    <a href="foAddEmployee1.jsp">
-                        <div class="circle">1</div>
-                    </a>
+                    <div class="circle">1</div>
                     <div class="step-title">Basics</div>
                 </div>
                 <div class="step">
-                    <a href="foAddEmployee2.jsp">
-                        <div class="circle active">2</div>
-                    </a>
+                    <div class="circle active">2</div>
                     <div class="step-title">Salary Details</div>
                 </div>
                 <div class="step">
-                    <a href="foAddEmployee3.jsp">
-                        <div class="circle">3</div>
-                    </a>
+                    <div class="circle">3</div>
                     <div class="step-title">Personal Info</div>
                 </div>
                 <div class="step">
-                    <a href="foAddEmployee4.jsp">
-                        <div class="circle">4</div>
-                    </a>
+                    <div class="circle">4</div>
                     <div class="step-title">Payment Info</div>
                 </div>
             </div>
 
             <!-- Form -->
-            <form action="foAddEmployee3.jsp" method="post">
+            <form action="AddEmployeeServlet" method="post">
                 <input type="hidden" name="step" value="2">
-                <label for="salaryBasic">Basics:</label>
-                <input type="number" id="salaryBasic" name="salaryBasic" value="<%= salaryBasic %>" required><br>
+
+                <label for="salaryBasic">Basic Salary:</label>
+                <input type="number" id="salaryBasic" name="salaryBasic" 
+                    value="${sessionScope.salaryBasic}" required><br>
 
                 <label for="salaryDeduction">Deductions:</label>
-                <input type="number" id="salaryDeduction" name="salaryDeduction" value="<%= salaryDeduction %>" required><br>
+                <input type="number" id="salaryDeduction" name="salaryDeduction" 
+                    value="${sessionScope.salaryDeduction}" required><br>
 
                 <label for="salaryOvtRate">Overtime Rate:</label>
-                <input type="number" id="salaryOvtRate" name="salaryOvtRate" value="<%= salaryOvtRate %>" required><br>
+                <input type="number" id="salaryOvtRate" name="salaryOvtRate" 
+                    value="${sessionScope.salaryOvtRate}" required><br>
 
                 <div class="button-container">
                     <button type="button" onclick="window.history.back()">Back</button>

@@ -5,23 +5,11 @@
 --%>
 
 <%@page import="java.sql.Date"%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     // Retrieve session attributes
     String staffFullname = (String) session.getAttribute("staffFullname");
-    String staffName = (String) session.getAttribute("staffName");
-    Date staffJoinedDate = (Date) session.getAttribute("staffJoinedDate"); // Change to Date
-    String staffGender = (String) session.getAttribute("staffGender");
-    String staffPosition = (String) session.getAttribute("staffPosition");
-
-    // Set default values if session attributes are null
-    if (staffFullname == null) staffFullname = "";
-    if (staffName == null) staffName = "";
-    if (staffJoinedDate == null) staffJoinedDate = null; // Set to null instead of empty string
-    if (staffGender == null) staffGender = "";
-    if (staffPosition == null) staffPosition = "";
 %>
-
 <!DOCTYPE html>
 <html>
 <head>
@@ -232,7 +220,7 @@
         <div class="sidebar">
             <div class="profile">
                 <div class="profile-pic"></div>
-                <p class="profile-name"><%= staffFullname %></p>
+                <p class="profile-name"><%= staffFullname != null ? staffFullname : "Finance Officer" %></p>
             </div>
             <ul class="nav-links">
                 <li><a href="foDashboard.jsp">Home</a></li>
@@ -249,52 +237,49 @@
             <!-- Navigation Steps -->
             <div class="steps">
                 <div class="step">
-                    <a href="foAddEmployee1.jsp">
-                        <div class="circle active">1</div>
-                    </a>
+                    <div class="circle active">1</div>
                     <div class="step-title">Basics</div>
                 </div>
                 <div class="step">
-                    <a href="foAddEmployee2.jsp">
-                        <div class="circle">2</div>
-                    </a>
+                    <div class="circle">2</div>
                     <div class="step-title">Salary Details</div>
                 </div>
                 <div class="step">
-                    <a href="foAddEmployee3.jsp">
-                        <div class="circle">3</div>
-                    </a>
+                    <div class="circle">3</div>
                     <div class="step-title">Personal Info</div>
                 </div>
                 <div class="step">
-                    <a href="foAddEmployee4.jsp">
-                        <div class="circle">4</div>
-                    </a>
+                    <div class="circle">4</div>
                     <div class="step-title">Payment Info</div>
                 </div>
             </div>
 
             <!-- Form Section -->
-            <form action="foAddEmployee2.jsp" method="post">
+            <form action="AddEmployeeServlet" method="post">
                 <input type="hidden" name="step" value="1">
-                <label for="staffName">Staff Full Name</label>
-                <input type="text" id="staffFullname" name="staffFullname" value="" required>
                 
+                <label for="staffFullname">Staff Full Name</label>
+                <input type="text" id="staffFullname" name="staffFullname" 
+                    value="${sessionScope.staffFullname}" required>
+
                 <label for="staffName">Staff Username</label>
-                <input type="text" id="staffName" name="staffName" value="" required>
+                <input type="text" id="staffName" name="staffName" 
+                    value="${sessionScope.staffName}" required>
 
                 <label for="staffJoinedDate">Joined Date</label>
-                <input type="date" id="staffJoinedDate" name="staffJoinedDate" value="<%= staffJoinedDate %>" required>
+                <input type="date" id="staffJoinedDate" name="staffJoinedDate" 
+                    value="${sessionScope.staffJoinedDate}" required>
 
                 <label for="staffGender">Gender</label>
-                    <select id="staffGender" name="staffGender" required>
-                        <option value="" disabled <%= (staffGender == null || staffGender.isEmpty()) ? "selected" : "" %>>Select Gender</option>
-                        <option value="Male" <%= "Male".equals(staffGender) ? "selected" : "" %>>Male</option>
-                        <option value="Female" <%= "Female".equals(staffGender) ? "selected" : "" %>>Female</option>
-                    </select>
+                <select id="staffGender" name="staffGender" required>
+                    <option value="" disabled ${empty sessionScope.staffGender ? 'selected' : ''}>Select Gender</option>
+                    <option value="Male" ${sessionScope.staffGender == 'Male' ? 'selected' : ''}>Male</option>
+                    <option value="Female" ${sessionScope.staffGender == 'Female' ? 'selected' : ''}>Female</option>
+                </select>
 
                 <label for="staffPosition">Position</label>
-                <input type="text" id="staffPosition" name="staffPosition" value="<%= staffPosition %>" required>
+                <input type="text" id="staffPosition" name="staffPosition" 
+                    value="${sessionScope.staffPosition}" required>
 
                 <div class="button-container">
                     <button type="reset" class="cancel-btn">Cancel</button>

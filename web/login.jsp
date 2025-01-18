@@ -82,8 +82,8 @@
                 <input type="password" id="staffPassword" name="staffPassword" required>
             </div>
             <div class="form-group">
-                <label for="role">Role</label>
-                <select id="role" name="role" required>
+                <label for="staffRole">Role</label>
+                <select id="staffRole" name="staffRole" required>
                     <option value="1">General Staff</option>
                     <option value="2">Finance Officer</option>
                     <option value="3">Manager</option>

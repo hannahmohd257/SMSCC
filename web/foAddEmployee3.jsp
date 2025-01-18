@@ -4,38 +4,16 @@
     Author     : user
 --%>
 
+<%@page import="model.Role"%>
 <%@page import="java.sql.Date"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-    String staffFullname = (String) session.getAttribute("staffFullname");
-    String salaryBasic = (String) session.getAttribute("salaryBasic");
-    String salaryDeduction = (String) session.getAttribute("salaryDeduction");
-    String salaryOvtRate = (String) session.getAttribute("salaryOvtRate");
-    
-    if (salaryBasic != null) session.setAttribute("salaryBasic", salaryBasic);
-    if (salaryDeduction != null) session.setAttribute("salaryDeduction", salaryDeduction);
-    if (salaryOvtRate != null) session.setAttribute("salaryOvtRate", salaryOvtRate);
-    
-    Integer staffRole = (Integer) session.getAttribute("staffRole");
-    Date staffDOB = (Date) session.getAttribute("staffDOB");
-    String staffAddress = (String) session.getAttribute("staffAddress");
-    String staffPhoneNo = request.getParameter("staffPhoneNo");
-    String staffEmail = request.getParameter("staffEmail");
-    String staffMaritalStatus = request.getParameter("staffMaritalStatus");
-    String staffEmpType = request.getParameter("staffEmpType");
-
-    if (staffRole == null) staffRole = 0;
-    if (staffDOB == null) staffDOB = null;
-    if (staffAddress == null) staffAddress = "";
-    if (staffPhoneNo == null) staffPhoneNo = "";
-    if (staffEmail == null) staffEmail = "";
-    if (staffMaritalStatus == null) staffMaritalStatus = "";
-    if (staffEmpType == null) staffEmpType = "";
+    String staffFullname = request.getParameter("staffFullname");
 %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CC | Add New Employee</title>
+    <title>CC | Add New Employee - Step 3</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -242,7 +220,7 @@
         <div class="sidebar">
             <div class="profile">
                 <div class="profile-pic"></div>
-                <p class="profile-name"><%= staffFullname %></p>
+                <p class="profile-name"><%= staffFullname != null ? staffFullname : "Finance Officer" %></p>
             </div>
             <ul class="nav-links">
                 <li><a href="foDashboard.jsp">Home</a></li>
@@ -253,70 +231,78 @@
             <a href="logout.jsp" class="logout">Logout</a>
         </div>
 
-        <!-- Navigation Steps -->
+        <!-- Main Content -->
         <div class="container-main">
             <h2>Step 3: Personal Info</h2>
+
+            <!-- Navigation Steps -->
             <div class="steps">
                 <div class="step">
-                    <a href="foAddEmployee1.jsp">
-                        <div class="circle">1</div>
-                    </a>
+                    <div class="circle">1</div>
                     <div class="step-title">Basics</div>
                 </div>
                 <div class="step">
-                    <a href="foAddEmployee2.jsp">
-                        <div class="circle">2</div>
-                    </a>
+                    <div class="circle">2</div>
                     <div class="step-title">Salary Details</div>
                 </div>
                 <div class="step">
-                    <a href="foAddEmployee3.jsp">
-                        <div class="circle active">3</div>
-                    </a>
+                    <div class="circle active">3</div>
                     <div class="step-title">Personal Info</div>
                 </div>
                 <div class="step">
-                    <a href="foAddEmployee4.jsp">
-                        <div class="circle">4</div>
-                    </a>
+                    <div class="circle">4</div>
                     <div class="step-title">Payment Info</div>
                 </div>
             </div>
 
+            <!-- Form -->
             <form action="AddEmployeeServlet" method="post">
                 <input type="hidden" name="step" value="3">
-                <label>Role:</label>
-                <input type="text" id="staffRole" name="staffRole" value="<%= staffRole %>" required><br>
+
+                <label for="staffRole">Role:</label>
+                <select id="staffRole" name="staffRole" required>
+                    <option value="">Select a role</option>
+                    <option value="GENERAL_STAFF" ${sessionScope.staffRole == 'GENERAL_STAFF' ? 'selected' : ''}>General Staff</option>
+                    <option value="FINANCE_OFFICER" ${sessionScope.staffRole == 'FINANCE_OFFICER' ? 'selected' : ''}>Finance Officer</option>
+                    <option value="MANAGER" ${sessionScope.staffRole == 'MANAGER' ? 'selected' : ''}>Manager</option>
+                </select>
+
+                <label>Password:</label>
+                <input type="text" id="staffPassword" name="staffPassword" 
+                    value="${sessionScope.staffPassword}" required><br>
+
                 <label>Date of Birth:</label>
-                <input type="date" id="staffDOB" name="staffDOB" value="<%= staffDOB %>" required><br>
+                <input type="date" id="staffDOB" name="staffDOB" 
+                    value="${sessionScope.staffDOB}" required><br>
 
                 <label>Address:</label>
-                <textarea name="address" id="staffAddress" value="<%= staffAddress %>" style="width: 300px; height: 50px;" required></textarea><br>
+                <textarea name="staffAddress" id="staffAddress" style="width: 300px; height: 50px;" 
+                    required>${sessionScope.staffAddress}</textarea><br>
 
                 <label>Contact Number:</label>
-                <input type="text" id="staffPhoneNo" name="staffPhoneNo" value="<%= staffPhoneNo %>" required><br>
+                <input type="text" id="staffPhoneNo" name="staffPhoneNo" 
+                    value="${sessionScope.staffPhoneNo}" required><br>
 
                 <label>Email:</label>
-                <input type="email" id="staffEmail" name="staffEmail" value="<%= staffEmail %>" required><br>
+                <input type="email" id="staffEmail" name="staffEmail" 
+                    value="${sessionScope.staffEmail}" required><br>
 
                 <label for="staffMaritalStatus">Marital Status:</label>
-                <select id="staffMaritalStatus" name="staffMaritalStatus">
-                    <option value="Single" <%= "Single".equals(staffMaritalStatus) ? "selected" : "" %>>Single</option>
-                    <option value="Married" <%= "Married".equals(staffMaritalStatus) ? "selected" : "" %>>Married</option>
-                    <option value="Divorced" <%= "Divorced".equals(staffMaritalStatus) ? "selected" : "" %>>Divorced</option>
+                <select id="staffMaritalStatus" name="staffMaritalStatus" required>
+                    <option value="Single" ${sessionScope.staffMaritalStatus == 'Single' ? 'selected' : ''}>Single</option>
+                    <option value="Married" ${sessionScope.staffMaritalStatus == 'Married' ? 'selected' : ''}>Married</option>
+                    <option value="Divorced" ${sessionScope.staffMaritalStatus == 'Divorced' ? 'selected' : ''}>Divorced</option>
                 </select><br>
 
                 <label for="staffEmpType">Employment Type:</label>
-                <select id="staffEmpType" name="staffEmpType">
-                    <option value="Full-Time" <%= "Full-Time".equals(staffEmpType) ? "selected" : "" %>>Full-Time</option>
-                    <option value="Part-Time" <%= "Part-Time".equals(staffEmpType) ? "selected" : "" %>>Part-Time</option>
-                    <option value="Contract" <%= "Contract".equals(staffEmpType) ? "selected" : "" %>>Contract</option>
+                <select id="staffEmpType" name="staffEmpType" required>
+                    <option value="Full-Time" ${sessionScope.staffEmpType == 'Full-Time' ? 'selected' : ''}>Full-Time</option>
+                    <option value="Part-Time" ${sessionScope.staffEmpType == 'Part-Time' ? 'selected' : ''}>Part-Time</option>
+                    <option value="Contract" ${sessionScope.staffEmpType == 'Contract' ? 'selected' : ''}>Contract</option>
                 </select><br>
 
                 <div class="button-container">
-                    <!--<button type="button" class="cancel-btn" onclick="window.location.href='CancelPage.jsp'">Cancel</button> -->
-                    <!-- <button type="reset" class="cancel-btn">Cancel</button> -->
-                    <button type="button" class="back-btn" onclick="window.history.back()">Back</button>
+                    <button type="button" onclick="window.history.back()">Back</button>
                     <button type="submit">Next</button>
                 </div>
             </form>
@@ -324,4 +310,3 @@
     </div>
 </body>
 </html>
-

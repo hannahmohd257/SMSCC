@@ -1,0 +1,523 @@
+foAddEmployee1.jsp
+@page import="java.sql.Date"%>
+<%@page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+    // Retrieve session attributes
+    String staffFullname = (String) session.getAttribute("staffFullname");
+    String staffName = (String) session.getAttribute("staffName");
+    Date staffJoinedDate = (Date) session.getAttribute("staffJoinedDate");
+    String staffGender = (String) session.getAttribute("staffGender");
+    String staffPosition = (String) session.getAttribute("staffPosition");
+
+    // Set default values if session attributes are null
+    if (staffFullname == null) staffFullname = "";
+    if (staffName == null) staffName = "";
+    if (staffJoinedDate == null) staffJoinedDate = null;
+    if (staffGender == null) staffGender = "";
+    if (staffPosition == null) staffPosition = "";
+%>
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CC | Add New Employee</title>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile">
+                <div class="profile-pic"></div>
+                <p class="profile-name"><%= staffFullname %></p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="foDashboard.jsp">Home</a></li>
+                <li><a href="EmployeeListServlet" class="active">Employees</a></li>
+                <li><a href="foApprovals.jsp">Approvals</a></li>
+                <li><a href="foReports.jsp">Reports</a></li>
+            </ul>
+            <a href="logout.jsp" class="logout">Logout</a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="container-main">
+            <h2>Step 1: Basics</h2>
+            <!-- Navigation Steps -->
+            <div class="steps">
+                <div class="step">
+                    <a href="foAddEmployee1.jsp">
+                        <div class="circle active">1</div>
+                    </a>
+                    <div class="step-title">Basics</div>
+                </div>
+                <div class="step">
+                    <a href="foAddEmployee2.jsp">
+                        <div class="circle">2</div>
+                    </a>
+                    <div class="step-title">Salary Details</div>
+                </div>
+                <div class="step">
+                    <a href="foAddEmployee3.jsp">
+                        <div class="circle">3</div>
+                    </a>
+                    <div class="step-title">Personal Info</div>
+                </div>
+                <div class="step">
+                    <a href="foAddEmployee4.jsp">
+                        <div class="circle">4</div>
+                    </a>
+                    <div class="step-title">Payment Info</div>
+                </div>
+            </div>
+
+            <!-- Form Section -->
+            <form action="foAddEmployee2.jsp" method="post">
+                <input type="hidden" name="step" value="1">
+                <label for="staffFullname">Staff Full Name</label>
+                <input type="text" id="staffFullname" name="staffFullname" value="" required>
+                
+                <label for="staffName">Staff Username</label>
+                <input type="text" id="staffName" name="staffName" value="" required>
+
+                <label for="staffJoinedDate">Joined Date</label>
+                <input type="date" id="staffJoinedDate" name="staffJoinedDate" value="<%= staffJoinedDate != null ? staffJoinedDate.toString() : "" %>" required>
+
+                <label for="staffGender">Gender</label>
+                <select id="staffGender" name="staffGender" required>
+                    <option value="" disabled <%= (staffGender == null || staffGender.isEmpty()) ? "selected" : "" %>>Select Gender</option>
+                    <option value="Male" <%= "Male".equals(staffGender) ? "selected" : "" %>>Male</option>
+                    <option value="Female" <%= "Female".equals(staffGender) ? "selected" : "" %>>Female</option>
+                </select>
+
+                <label for="staffPosition">Position</label>
+                <input type="text" id="staffPosition" name="staffPosition" value="<%= staffPosition %>" required>
+
+                <div class="button-container">
+                    <button type="reset" class="cancel-btn">Cancel</button>
+                    <button type="submit">Next</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
+foAddEmployee2.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="java.util.*" %>
+        <%
+            String staffFullname = (String) session.getAttribute("staffFullname");
+            String staffName = (String) session.getAttribute("staffName");
+            Date staffJoinedDate = (Date) session.getAttribute("staffJoinedDate");
+            String staffGender = (String) session.getAttribute("staffGender");
+            String staffPosition = (String) session.getAttribute("staffPosition");
+                    
+            if (staffFullname != null) session.setAttribute("staffFullname", staffFullname);
+            if (staffName != null) session.setAttribute("staffName", staffName);
+            if (staffJoinedDate != null) session.setAttribute("staffJoinedDate", staffJoinedDate);
+            if (staffGender != null) session.setAttribute("staffGender", staffGender);
+            if (staffPosition != null) session.setAttribute("staffPosition", staffPosition);
+
+            String salaryBasic = (String) session.getAttribute("salaryBasic");
+            String salaryDeduction = (String) session.getAttribute("salaryDeduction");
+            String salaryOvtRate = (String) session.getAttribute("salaryOvtRate");
+
+            if (salaryBasic == null) salaryBasic = "";
+            if (salaryDeduction == null) salaryDeduction = "";
+            if (salaryOvtRate == null) salaryOvtRate = "";
+        %>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CC | Add New Employee - Step 2</title>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile">
+                <div class="profile-pic"></div>
+                <p class="profile-name"><%= staffFullname %></p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="foDashboard.jsp">Home</a></li>
+                <li><a href="EmployeeListServlet" class="active">Employees</a></li>
+                <li><a href="foApprovals.jsp">Approvals</a></li>
+                <li><a href="foReports.jsp">Reports</a></li>
+            </ul>
+            <a href="logout.jsp" class="logout">Logout</a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="container-main">
+            <h2>Step 2: Salary Details</h2>
+
+            <!-- Navigation Steps -->
+            <div class="steps">
+                <div class="step">
+                    <a href="foAddEmployee1.jsp">
+                        <div class="circle">1</div>
+                    </a>
+                    <div class="step-title">Basics</div>
+                </div>
+                <div class="step">
+                    <a href="foAddEmployee2.jsp">
+                        <div class="circle active">2</div>
+                    </a>
+                    <div class="step-title">Salary Details</div>
+                </div>
+                <div class="step">
+                    <a href="foAddEmployee3.jsp">
+                        <div class="circle">3</div>
+                    </a>
+                    <div class="step-title">Personal Info</div>
+                </div>
+                <div class="step">
+                    <a href="foAddEmployee4.jsp">
+                        <div class="circle">4</div>
+                    </a>
+                    <div class="step-title">Payment Info</div>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <form action="foAddEmployee3.jsp" method="post">
+                <input type="hidden" name="step" value="2">
+                <label for="salaryBasic">Basics:</label>
+                <input type="number" id="salaryBasic" name="salaryBasic" value="<%= salaryBasic %>" required><br>
+
+                <label for="salaryDeduction">Deductions:</label>
+                <input type="number" id="salaryDeduction" name="salaryDeduction" value="<%= salaryDeduction %>" required><br>
+
+                <label for="salaryOvtRate">Overtime Rate:</label>
+                <input type="number" id="salaryOvtRate" name="salaryOvtRate" value="<%= salaryOvtRate %>" required><br>
+
+                <div class="button-container">
+                    <button type="button" onclick="window.history.back()">Back</button>
+                    <button type="submit">Next</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
+foAddEmployee3.jsp
+<%@page import="java.sql.Date"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%
+    String staffFullname = (String) session.getAttribute("staffFullname");
+    String salaryBasic = (String) session.getAttribute("salaryBasic");
+    String salaryDeduction = (String) session.getAttribute("salaryDeduction");
+    String salaryOvtRate = (String) session.getAttribute("salaryOvtRate");
+    
+    if (salaryBasic != null) session.setAttribute("salaryBasic", salaryBasic);
+    if (salaryDeduction != null) session.setAttribute("salaryDeduction", salaryDeduction);
+    if (salaryOvtRate != null) session.setAttribute("salaryOvtRate", salaryOvtRate);
+    
+    Integer staffRole = (Integer) session.getAttribute("staffRole");
+    Date staffDOB = (Date) session.getAttribute("staffDOB");
+    String staffAddress = (String) session.getAttribute("staffAddress");
+    String staffPhoneNo = request.getParameter("staffPhoneNo");
+    String staffEmail = request.getParameter("staffEmail");
+    String staffMaritalStatus = request.getParameter("staffMaritalStatus");
+    String staffEmpType = request.getParameter("staffEmpType");
+
+    if (staffRole == null) staffRole = 0;
+    if (staffDOB == null) staffDOB = null;
+    if (staffAddress == null) staffAddress = "";
+    if (staffPhoneNo == null) staffPhoneNo = "";
+    if (staffEmail == null) staffEmail = "";
+    if (staffMaritalStatus == null) staffMaritalStatus = "";
+    if (staffEmpType == null) staffEmpType = "";
+%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CC | Add New Employee</title>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile">
+                <div class="profile-pic"></div>
+                <p class="profile-name"><%= staffFullname %></p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="foDashboard.jsp">Home</a></li>
+                <li><a href="EmployeeListServlet" class="active">Employees</a></li>
+                <li><a href="foApprovals.jsp">Approvals</a></li>
+                <li><a href="foReports.jsp">Reports</a></li>
+            </ul>
+            <a href="logout.jsp" class="logout">Logout</a>
+        </div>
+
+        <!-- Navigation Steps -->
+        <div class="container-main">
+            <h2>Step 3: Personal Info</h2>
+            <div class="steps">
+                <div class="step">
+                    <a href="foAddEmployee1.jsp">
+                        <div class="circle">1</div>
+                    </a>
+                    <div class="step-title">Basics</div>
+                </div>
+                <div class="step">
+                    <a href="foAddEmployee2.jsp">
+                        <div class="circle">2</div>
+                    </a>
+                    <div class="step-title">Salary Details</div>
+                </div>
+                <div class="step">
+                    <a href="foAddEmployee3.jsp">
+                        <div class="circle active">3</div>
+                    </a>
+                    <div class="step-title">Personal Info</div>
+                </div>
+                <div class="step">
+                    <a href="foAddEmployee4.jsp">
+                        <div class="circle">4</div>
+                    </a>
+                    <div class="step-title">Payment Info</div>
+                </div>
+            </div>
+
+            <form action="AddEmployeeServlet" method="post">
+                <input type="hidden" name="step" value="3">
+                <label>Role:</label>
+                <input type="text" id="staffRole" name="staffRole" value="<%= staffRole %>" required><br>
+                <label>Date of Birth:</label>
+                <input type="date" id="staffDOB" name="staffDOB" value="<%= staffDOB %>" required><br>
+
+                <label>Address:</label>
+                <textarea name="address" id="staffAddress" value="<%= staffAddress %>" style="width: 300px; height: 50px;" required></textarea><br>
+
+                <label>Contact Number:</label>
+                <input type="text" id="staffPhoneNo" name="staffPhoneNo" value="<%= staffPhoneNo %>" required><br>
+
+                <label>Email:</label>
+                <input type="email" id="staffEmail" name="staffEmail" value="<%= staffEmail %>" required><br>
+
+                <label for="staffMaritalStatus">Marital Status:</label>
+                <select id="staffMaritalStatus" name="staffMaritalStatus">
+                    <option value="Single" <%= "Single".equals(staffMaritalStatus) ? "selected" : "" %>>Single</option>
+                    <option value="Married" <%= "Married".equals(staffMaritalStatus) ? "selected" : "" %>>Married</option>
+                    <option value="Divorced" <%= "Divorced".equals(staffMaritalStatus) ? "selected" : "" %>>Divorced</option>
+                </select><br>
+
+                <label for="staffEmpType">Employment Type:</label>
+                <select id="staffEmpType" name="staffEmpType">
+                    <option value="Full-Time" <%= "Full-Time".equals(staffEmpType) ? "selected" : "" %>>Full-Time</option>
+                    <option value="Part-Time" <%= "Part-Time".equals(staffEmpType) ? "selected" : "" %>>Part-Time</option>
+                    <option value="Contract" <%= "Contract".equals(staffEmpType) ? "selected" : "" %>>Contract</option>
+                </select><br>
+
+                <div class="button-container">
+                    <!--<button type="button" class="cancel-btn" onclick="window.location.href='CancelPage.jsp'">Cancel</button> -->
+                    <!-- <button type="reset" class="cancel-btn">Cancel</button> -->
+                    <button type="button" class="back-btn" onclick="window.history.back()">Back</button>
+                    <button type="submit">Next</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
+foAddEmployee4.jsp
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="java.util.*" %>
+<%
+    String staffFullname = (String) session.getAttribute("staffFullname");
+    Date staffDOB = (Date) session.getAttribute("staffDOB");
+    String staffAddress = (String) session.getAttribute("staffAddress");
+    String staffPhoneNo = request.getParameter("staffPhoneNo");
+    String staffEmail = request.getParameter("staffEmail");
+    String staffMaritalStatus = request.getParameter("staffMaritalStatus");
+    String staffEmpType = request.getParameter("staffEmpType");
+
+    if (staffDOB != null) session.setAttribute("staffDOB", staffDOB);
+    if (staffAddress != null) session.setAttribute("staffAddress", staffAddress);
+    if (staffPhoneNo != null) session.setAttribute("staffPhoneNo", staffPhoneNo);
+    if (staffEmail != null) session.setAttribute("staffEmail", staffEmail);
+    if (staffMaritalStatus != null) session.setAttribute("staffMaritalStatus", staffMaritalStatus);
+    if (staffEmpType != null) session.setAttribute("staffEmpType", staffEmpType);
+    
+    String staffBank = request.getParameter("staffBank");
+    String staffAccNo = request.getParameter("staffAccNo");
+    
+    if (staffBank == null) staffBank = "";
+    if (staffAccNo == null) staffAccNo = "";
+%>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>CC | Add New Employee - Step 4</title>
+</head>
+<body>
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <div class="profile">
+                <div class="profile-pic"></div>
+                <p class="profile-name"><%= staffFullname %></p>
+            </div>
+            <ul class="nav-links">
+                <li><a href="foDashboard.jsp">Home</a></li>
+                <li><a href="EmployeeListServlet" class="active">Employees</a></li>
+                <li><a href="foApprovals.jsp">Approvals</a></li>
+                <li><a href="foReports.jsp">Reports</a></li>
+            </ul>
+            <a href="logout.jsp" class="logout">Logout</a>
+        </div>
+
+        <!-- Main Content -->
+        <div class="container-main">
+            <h2>Step 4: Payment Info</h2>
+
+            <!-- Navigation Steps -->
+            <div class="steps">
+                <div class="step">
+                    <a href="foAddEmployee1.jsp">
+                        <div class="circle">1</div>
+                    </a>
+                    <div class="step-title">Basics</div>
+                </div>
+                <div class="step">
+                    <a href="foAddEmployee2.jsp">
+                        <div class="circle">2</div>
+                    </a>
+                    <div class="step-title">Salary Details</div>
+                </div>
+                <div class="step">
+                    <a href="foAddEmployee3.jsp">
+                        <div class="circle">3</div>
+                    </a>
+                    <div class="step-title">Personal Info</div>
+                </div>
+                <div class="step">
+                    <a href="foAddEmployee4.jsp">
+                        <div class="circle active">4</div>
+                    </a>
+                    <div class="step-title">Payment Info</div>
+                </div>
+            </div>
+
+            <!-- Form -->
+            <form action="AddEmployeeServlet" method="post">
+                <input type="hidden" name="step" value="4">
+                <label for="staffBank">Bank Name:</label>
+                <input type="text" id="staffBank" name="staffBank" value="<%= staffBank %>" required><br>
+
+                <label for="staffAccNo">Bank Account:</label>
+                <input type="text" id="staffAccNo" name="staffAccNo" value="<%= staffAccNo %>" required><br>
+
+                <div class="button-container">
+                    <button type="button" onclick="window.history.back()">Back</button>
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
+
+AddEmployeeServlet
+import java.io.IOException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import javax.servlet.*;
+import javax.servlet.http.*;
+
+public class AddEmployeeServlet extends HttpServlet {
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        HttpSession session = request.getSession();
+
+        // Retrieve the step from the form
+        String step = request.getParameter("step");
+
+        // Handle Step 1: Basics
+        if ("1".equals(step)) {
+            String staffFullname = request.getParameter("staffFullname");
+            String staffName = request.getParameter("staffName");
+            String staffJoinedDateStr = request.getParameter("staffJoinedDate"); // String representation
+            String staffGender = request.getParameter("staffGender");
+            String staffPosition = request.getParameter("staffPosition");
+
+            // Parse staffJoinedDate from String to Date
+            Date staffJoinedDate = parseDate(staffJoinedDateStr);
+            session.setAttribute("staffFullname", staffFullname);
+            session.setAttribute("staffName", staffName);
+            session.setAttribute("staffJoinedDate", staffJoinedDate);
+            session.setAttribute("staffGender", staffGender);
+            session.setAttribute("staffPosition", staffPosition);
+            response.sendRedirect("foAddEmployee2.jsp"); // Navigate to Step 2
+        }
+
+        // Handle Step 3: Personal Info
+        if ("3".equals(step)) {
+            String staffDOBStr = request.getParameter("staffDOB"); // String representation
+            String staffAddress = request.getParameter("staffAddress");
+            String staffPhoneNo = request.getParameter("staffPhoneNo");
+            String staffEmail = request.getParameter("staffEmail");
+            String staffMaritalStatus = request.getParameter("staffMaritalStatus");
+            String staffEmpType = request.getParameter("staffEmpType");
+
+            // Parse staffDOB from String to Date
+            Date staffDOB = parseDate(staffDOBStr);
+            session.setAttribute("staffDOB", staffDOB);
+            session.setAttribute("staffAddress", staffAddress);
+            session.setAttribute("staffPhoneNo", staffPhoneNo);
+            session.setAttribute("staffEmail", staffEmail);
+            session.setAttribute("staffMaritalStatus", staffMaritalStatus);
+            session.setAttribute("staffEmpType", staffEmpType);
+            response.sendRedirect("foAddEmployee4.jsp"); // Navigate to Step 4
+        }
+
+        // Handle Step 4: Payment Info
+        if ("4".equals(step)) {
+            String staffBank = request.getParameter("staffBank");
+            String staffAccNo = request.getParameter("staffAccNo");
+            session.setAttribute("staffBank", staffBank);
+            session.setAttribute("staffAccNo", staffAccNo);
+
+            // Save all data to the database
+            saveToDatabase(session);
+            response.sendRedirect("success.jsp"); // Redirect to a success page
+        }
+    }
+
+    private Date parseDate(String dateStr) {
+        if (dateStr == null || dateStr.isEmpty()) {
+            return null; // Handle empty or null date strings
+        }
+        try {
+            return DATE_FORMAT.parse(dateStr);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null; // Handle parse errors gracefully
+        }
+    }
+
+    private void saveToDatabase(HttpSession session) {
+        // Code to save data to the database using session attributes
+        // Example: Convert Date to SQL Date if needed before saving
+        java.util.Date staffDOB = (java.util.Date) session.getAttribute("staffDOB");
+        java.util.Date staffJoinedDate = (java.util.Date) session.getAttribute("staffJoinedDate");
+
+        if (staffDOB != null) {
+            java.sql.Date sqlStaffDOB = new java.sql.Date(staffDOB.getTime());
+            // Save sqlStaffDOB to the database
+        }
+
+        if (staffJoinedDate != null) {
+            java.sql.Date sqlStaffJoinedDate = new java.sql.Date(staffJoinedDate.getTime());
+            // Save sqlStaffJoinedDate to the database
+        }
+    }
+}
