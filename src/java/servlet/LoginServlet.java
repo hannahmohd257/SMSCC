@@ -4,7 +4,6 @@
  */
 package servlet;
 
-import model.Role;
 import model.Staff;
 import dao.StaffDAO;
 
@@ -22,40 +21,38 @@ public class LoginServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        int staffID = Integer.parseInt(request.getParameter("staffID"));
-        String staffPassword = request.getParameter("staffPassword");
-        String staffRoleValue = request.getParameter("staffRole");
+            int staffID = Integer.parseInt(request.getParameter("staffID"));
+            String staffPassword = request.getParameter("staffPassword");
+            String staffRole = request.getParameter("staffRole"); // Role from form
 
         try {
-            // Parse the role value and validate credentials
-            Role staffRole = Role.fromValue(Integer.parseInt(staffRoleValue)); // Convert role to enum
+            // Validate credentials
             boolean isValid = staffDAO.validateStaffCredentials(staffID, staffPassword, staffRole);
 
             HttpSession session = request.getSession();
             session.invalidate(); // Clear old session
             session = request.getSession(true); // Create new session
-            session.setAttribute("staffRole", "FINANCE_OFFICER"); // Set necessary attributes
+            session.setAttribute("staffRole", staffRole); // Save role as string
 
             if (isValid) {
                 // Retrieve the staff details from the database
-                //Staff staff = staffDAO.getStaffByID(staffID);
                 Staff staff = staffDAO.getStaffByID(staffID);
 
                 if (staff != null) {
                     // Save staff information in the session
-                    session.setAttribute("staffName", staff.getStaffName()); // Retrieved staffName
-                    session.setAttribute("staffFullname", staff.getStaffFullname()); // Retrieved staffFullname
+                    session.setAttribute("staffName", staff.getStaffName());
+                    session.setAttribute("staffFullname", staff.getStaffFullname());
                     session.setAttribute("staffRole", staff.getStaffRole());
 
                     // Redirect to the appropriate dashboard based on the role
                     switch (staffRole) {
-                        case GENERAL_STAFF:
+                        case "General Staff":
                             response.sendRedirect("staffDashboard.jsp");
                             break;
-                        case FINANCE_OFFICER:
+                        case "Finance Officer":
                             response.sendRedirect("foDashboard.jsp");
                             break;
-                        case MANAGER:
+                        case "Manager":
                             response.sendRedirect("managerDashboard.jsp");
                             break;
                         default:
@@ -70,6 +67,10 @@ public class LoginServlet extends HttpServlet {
                 request.setAttribute("errorMessage", "Invalid login credentials or role selected.");
                 request.getRequestDispatcher("login.jsp").forward(request, response);
             }
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+            request.setAttribute("errorMessage", "Invalid role selected.");
+            request.getRequestDispatcher("login.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
             request.setAttribute("errorMessage", "An error occurred. Please try again.");

@@ -262,10 +262,10 @@
                 <label for="staffRole">Role:</label>
                 <select id="staffRole" name="staffRole" required>
                     <option value="">Select a role</option>
-                    <option value="1" ${sessionScope.staffRole == 'GENERAL_STAFF' ? 'selected' : ''}>General Staff</option>
-                    <option value="2" ${sessionScope.staffRole == 'FINANCE_OFFICER' ? 'selected' : ''}>Finance Officer</option>
-                    <option value="3" ${sessionScope.staffRole == 'MANAGER' ? 'selected' : ''}>Manager</option>
-                </select>
+                    <option value="General Staff" ${sessionScope.staffRole == 'General Staff' ? 'selected' : ''}>General Staff</option>
+                    <option value="Finance Officer" ${sessionScope.staffRole == 'Finance Officer' ? 'selected' : ''}>Finance Officer</option>
+                    <option value="Manager" ${sessionScope.staffRole == 'Manager' ? 'selected' : ''}>Manager</option>
+                </select><br>
 
                 <label>Password:</label>
                 <input type="text" id="staffPassword" name="staffPassword" 
@@ -280,8 +280,8 @@
                     required>${sessionScope.staffAddress}</textarea><br>
 
                 <label>Contact Number:</label>
-                <input type="text" id="staffPhoneNo" name="staffPhoneNo" 
-                    value="${sessionScope.staffPhoneNo}" required><br>
+                <input type="text" id="staffPhoneno" name="staffPhoneno" 
+                    value="${sessionScope.staffPhoneno}" required><br>
 
                 <label>Email:</label>
                 <input type="email" id="staffEmail" name="staffEmail" 
@@ -289,6 +289,7 @@
 
                 <label for="staffMaritalStatus">Marital Status:</label>
                 <select id="staffMaritalStatus" name="staffMaritalStatus" required>
+                    <option value="">Select marital status</option>
                     <option value="Single" ${sessionScope.staffMaritalStatus == 'Single' ? 'selected' : ''}>Single</option>
                     <option value="Married" ${sessionScope.staffMaritalStatus == 'Married' ? 'selected' : ''}>Married</option>
                     <option value="Divorced" ${sessionScope.staffMaritalStatus == 'Divorced' ? 'selected' : ''}>Divorced</option>
@@ -296,6 +297,7 @@
 
                 <label for="staffEmpType">Employment Type:</label>
                 <select id="staffEmpType" name="staffEmpType" required>
+                    <option value="">Select employment type</option>
                     <option value="Full-Time" ${sessionScope.staffEmpType == 'Full-Time' ? 'selected' : ''}>Full-Time</option>
                     <option value="Part-Time" ${sessionScope.staffEmpType == 'Part-Time' ? 'selected' : ''}>Part-Time</option>
                     <option value="Contract" ${sessionScope.staffEmpType == 'Contract' ? 'selected' : ''}>Contract</option>

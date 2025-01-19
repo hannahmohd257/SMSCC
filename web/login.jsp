@@ -84,9 +84,9 @@
             <div class="form-group">
                 <label for="staffRole">Role</label>
                 <select id="staffRole" name="staffRole" required>
-                    <option value="1">General Staff</option>
-                    <option value="2">Finance Officer</option>
-                    <option value="3">Manager</option>
+                    <option value="General Staff">General Staff</option>
+                    <option value="Finance Officer">Finance Officer</option>
+                    <option value="Manager">Manager</option>
                 </select>
             </div>
             <button type="submit">Login</button>

@@ -211,8 +211,8 @@
             </div>
 
             <div class="tabs">
-                <a href="foEmpOverview.jsp">Overview</a> |
-                <a href="foEmpSalaryDetails.jsp">Salary Details</a> |
+                <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=overview">Overview</a> |
+                <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=salary">Salary Details</a> |
                 <a href="foEmpPayslip.jsp" class="active">Payslips</a>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center;">

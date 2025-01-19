@@ -10,7 +10,7 @@ import java.util.Date;
 public class Staff {
     private int staffID;
     private String staffPassword;
-    private Role staffRole;
+    private String staffRole;
     private String staffName;
     private String staffFullname;
     private String staffEmail;
@@ -26,7 +26,7 @@ public class Staff {
     private String staffAccNo;
 
     // Constructor
-    public Staff(int staffID, String staffPassword, Role staffRole, String staffName, String staffFullname, 
+    public Staff(int staffID, String staffPassword, String staffRole, String staffName, String staffFullname, 
                  String staffEmail, String staffPosition, String staffPhoneno, String staffAddress, 
                  Date staffJoinedDate, String staffGender, Date staffDOB, String staffMaritalStatus, 
                  String staffEmpType, String staffBank, String staffAccNo) {
@@ -68,11 +68,11 @@ public class Staff {
         this.staffPassword = staffPassword;
     }
 
-    public Role getStaffRole() {
+    public String getStaffRole() {
         return staffRole;
     }
 
-    public void setStaffRole(Role staffRole) {
+    public void setStaffRole(String staffRole) {
         this.staffRole = staffRole;
     }
 
@@ -187,7 +187,7 @@ public class Staff {
         return "Staff{" +
                 "staffID=" + staffID +
                 ", staffPassword='" + staffPassword + '\'' +
-                ", staffRole=" + staffRole +
+                ", staffRole='" + staffRole +
                 ", staffName='" + staffName + '\'' +
                 ", staffFullname='" + staffFullname + '\'' +
                 ", staffEmail='" + staffEmail + '\'' +

@@ -25,9 +25,9 @@ public class EmployeeListServlet extends HttpServlet {
 
         HttpSession session = request.getSession(false);
 
-        // Ensure the user is logged in and is a Finance Officer
+         //Ensure the user is logged in and is a Finance Officer
         if (session == null || session.getAttribute("staffRole") == null || 
-            !session.getAttribute("staffRole").toString().equals("FINANCE_OFFICER")) {
+            !session.getAttribute("staffRole").toString().equals("Finance Officer")) {
             response.sendRedirect("login.jsp");
             return;
         }

@@ -10,9 +10,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import model.Role;
 import model.Staff;
 import util.DBConnection;
 
@@ -29,9 +27,7 @@ public class StaffDAO {
                 staff = new Staff();
                 staff.setStaffID(resultSet.getInt("staffID"));
                 staff.setStaffPassword(resultSet.getString("staffPassword"));
-                
-                // Convert role from Integer to Role enum, if possible
-                staff.setStaffRole(Role.fromValue(resultSet.getInt("staffRole")));
+                staff.setStaffRole(resultSet.getString("staffRole"));
                 
                 // Handle nullable fields
                 staff.setStaffName(resultSet.getString("staffName"));
@@ -56,14 +52,14 @@ public class StaffDAO {
         return staff;
     }
 
-    public boolean validateStaffCredentials(int staffID, String staffPassword, Role staffRole) {
+    public boolean validateStaffCredentials(int staffID, String staffPassword, String staffRole) {
         boolean isValid = false;
         String query = "SELECT * FROM staff WHERE staffID = ? AND staffPassword = ? AND staffRole = ?";
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setInt(1, staffID);
             statement.setString(2, staffPassword);
-            statement.setInt(3, staffRole.getValue()); // Convert Role to its Integer value
+            statement.setString(3, staffRole); // Convert Role to its Integer value
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 isValid = true;
@@ -115,23 +111,21 @@ public class StaffDAO {
             statement.setString(12, staff.getStaffAccNo());
             statement.setDate(13, staff.getStaffDOB() != null ? new java.sql.Date(staff.getStaffDOB().getTime()) : null);
             statement.setString(14, staff.getStaffPassword());
-            statement.setString(15, staff.getStaffRole() != null ? staff.getStaffRole().name() : Role.GENERAL_STAFF.name());  // Convert enum to string // Convert enum to string
+            statement.setString(15, staff.getStaffRole());
 
             // Execute the query
             int affectedRows = statement.executeUpdate();
-        if (affectedRows == 0) {
-            throw new SQLException("Failed to insert staff, no rows affected.");
-        }
+            if (affectedRows == 0) {
+                throw new SQLException("Failed to insert staff, no rows affected.");
+            }
 
-        try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-            if (generatedKeys.next()) {
-                return generatedKeys.getInt(1); // Return the generated staffID
-            } else {
-                throw new SQLException("Failed to insert staff, no ID obtained.");
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    return generatedKeys.getInt(1); // Return the generated staffID
+                } else {
+                    throw new SQLException("Failed to insert staff, no ID obtained.");
+                }
             }
         }
-        
-        }
     }
-    
 }

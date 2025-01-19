@@ -8,7 +8,6 @@
 <%
     // Retrieve staffFullname from session
     String staffFullname = (String) session.getAttribute("staffFullname");
-
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -215,32 +214,36 @@
         <!-- Main Content -->
         <div class="content">
             <div class="header">
-                <h1>Employee: <span class="name">Staff Name</span></h1>
-                <h2>Staff ID: xxxxx</h2>
+                <h1><span class="name">Staff ID: ${staff.staffID}</span></h1>
             </div>
 
             <div class="tabs">
-                <a href="foEmpOverview.jsp" class="active">Overview</a> |
-                <a href="foEmpSalaryDetails.jsp">Salary Details</a> |
+                <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=overview" class="active">Overview</a> |
+                <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=salary">Salary Details</a> |
                 <a href="foEmpPayslip.jsp">Payslips</a>
             </div>
-
 
             <div class="employee-details">
                 <div class="employee-card">
                     <img src="#" alt="Profile Picture">
-                    <p class="employee-info">Name: Staff 1</p>
-                    <p class="employee-info">Age: xx</p>
-                    <p class="employee-info">Position: xxxx</p>
+                    <p class="employee-info">Name: ${staff.staffFullname}</p>
+                    <p class="employee-info">Position: ${staff.staffPosition}</p>
                 </div>
                 <div class="personal-details">
                     <h3>Personal Details</h3>
-                    <p>First Name: </p>
-                    <p>Last Name: </p>
-                    <p>Phone Number: </p>
-                    <p>Date of Birth: </p>
-                    <p>Personal Email: </p>
-                    <p>Residential Area: </p>
+                    <p>Full Name: ${staff.staffFullname}</p>
+                    <p>Password: ${staff.staffPassword}</p>
+                    <p>Role: ${staff.staffRole}</p>
+                    <p>Gender: ${staff.staffGender}</p>
+                    <p>Phone Number: ${staff.staffPhoneno}</p>
+                    <p>Date of Birth: ${staff.staffDOB}</p>
+                    <p>Email: ${staff.staffEmail}</p>
+                    <p>Residential Area: ${staff.staffAddress}</p>
+                    <p>Joined Date: ${staff.staffJoinedDate}</p>
+                    <p>Marital Status: ${staff.staffMaritalStatus}</p>
+                    <p>Employment Type: ${staff.staffEmpType}</p>
+                    <p>Bank Type: ${staff.staffBank}</p>
+                    <p>Bank Account Number: ${staff.staffAccNo}</p>
                 </div>
             </div>
         </div>

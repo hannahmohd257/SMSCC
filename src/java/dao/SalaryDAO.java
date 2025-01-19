@@ -52,28 +52,6 @@ public class SalaryDAO {
         }
         return salary;
     }
-//
-//    // Method to retrieve all salaries (could be used for an admin view)
-//    public List<Salary> getAllSalaries() {
-//        List<Salary> salaries = new ArrayList<>();
-//        String query = "SELECT * FROM Salary";
-//        try (Connection connection = DBConnection.getConnection();
-//             PreparedStatement statement = connection.prepareStatement(query);
-//             ResultSet resultSet = statement.executeQuery()) {
-//            while (resultSet.next()) {
-//                Salary salary = new Salary();
-//                salary.setSalaryID(resultSet.getInt("salaryID"));
-//                salary.setStaffID(resultSet.getInt("staffID"));
-//                salary.setBasicSalary(resultSet.getDouble("basicSalary"));
-//                salary.setDeductions(resultSet.getDouble("deductions"));
-//                salary.setOvertimeRate(resultSet.getDouble("overtimeRate"));
-//                salaries.add(salary);
-//            }
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }
-//        return salaries;
-//    }
 
     // Method to update salary details for an employee
     public boolean updateSalary(Salary salary) {

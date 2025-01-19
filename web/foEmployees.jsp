@@ -202,7 +202,7 @@
                 <c:forEach var="employee" items="${employeeList}">
                     <tr>
                         <td>${employee.staffID}</td>
-                        <td><a href="foEmpOverview.jsp?staffID=${employee.staffID}">${employee.staffFullname}</a></td>
+                        <td><a href="EmployeeDetailsServlet?staffID=${employee.staffID}&viewType=overview">${employee.staffFullname}</a></td>
                         <td>${employee.staffEmail}</td>
                         <td>${employee.staffPosition}</td>
                     </tr>

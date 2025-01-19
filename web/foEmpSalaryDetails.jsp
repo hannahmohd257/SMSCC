@@ -206,30 +206,28 @@
         <!-- Main Content -->
         <div class="content">
             <div class="header">
-                <h1>Employee: <span class="name">Staff Name</span></h1>
-                <h2>Staff ID: xxxxx</h2>
+                <h1><span class="name">Staff ID: ${staff.staffID}</span></h1>
             </div>
 
             <div class="tabs">
-                <a href="foEmpOverview.jsp">Overview</a> |
-                <a href="foEmpSalaryDetails.jsp"  class="active">Salary Details</a> |
+                <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=overview">Overview</a> |
+                <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=salary" class="active">Salary Details</a> |
                 <a href="foEmpPayslip.jsp">Payslips</a>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <h3>Salary Components</h3>
-                        <p>Basic</p>
-                        <p>Overtime</p>
-                        <p>Deductions</p>
-                        <p>Net Pay</p>
+                    <p>Basic Salary: </p>
+                    <p>Deductions: </p>
+                    <p>Overtime Rate:</p>
+                    <p>Net Pay:</p>
                 </div>
                 <div>
                     <h3>Monthly Amount</h3>
-                    <!-- You can add the values of the monthly amounts here, e.g. -->
-                    <p>RM3500</p>
-                    <p>RM500</p>
-                    <p>-RM100</p>
-                    <p>RM3900</p>
+                    <p>${salary.salaryBasic}</p>
+                    <p>${salary.salaryDeduction}</p>
+                    <p>${salary.salaryOvtRate}</p>
+                    <p>${salary.salaryBasic - salary.salaryDeduction}</p> <!-- Replace with another calculation logic if required -->
                 </div>
             </div>
         </div>
