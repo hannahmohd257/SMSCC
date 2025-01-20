@@ -213,7 +213,7 @@
             <div class="tabs">
                 <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=overview">Overview</a> |
                 <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=salary">Salary Details</a> |
-                <a href="foEmpPayslip.jsp" class="active">Payslips</a>
+                <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=payslip" class="active">Payslips</a>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>

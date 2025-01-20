@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import model.Staff;
 import util.DBConnection;
+import static util.DBConnection.getConnection;
 
 public class StaffDAO {
 
@@ -126,6 +127,61 @@ public class StaffDAO {
                     throw new SQLException("Failed to insert staff, no ID obtained.");
                 }
             }
+        }
+    }
+    
+    public boolean updateStaff(Staff staff) {
+        String query = "UPDATE staff SET staffFullname = ?, staffName = ?, staffJoinedDate = ?, staffGender = ?, " +
+                       "staffPosition = ?, staffAddress = ?, staffPhoneno = ?, staffEmail = ?, staffMaritalStatus = ?, " +
+                       "staffEmpType = ?, staffBank = ?, staffAccNo = ?, staffDOB = ?, staffPassword = ?, staffRole = ? " +
+                       "WHERE staffID = ?";
+
+        try (Connection conn = getConnection();
+             PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            // Prepare statement with correct data types
+            stmt.setString(1, staff.getStaffFullname());
+            stmt.setString(2, staff.getStaffName());
+
+            // Assuming staffJoinedDate is a java.util.Date object
+            stmt.setDate(3, new java.sql.Date(staff.getStaffJoinedDate().getTime()));
+
+            stmt.setString(4, staff.getStaffGender());
+            stmt.setString(5, staff.getStaffPosition());
+            stmt.setString(6, staff.getStaffAddress());
+            stmt.setString(7, staff.getStaffPhoneno());
+            stmt.setString(8, staff.getStaffEmail());
+            stmt.setString(9, staff.getStaffMaritalStatus());
+            stmt.setString(10, staff.getStaffEmpType());
+            stmt.setString(11, staff.getStaffBank());
+            stmt.setString(12, staff.getStaffAccNo());
+
+            // Assuming staffDOB is a java.util.Date object
+            stmt.setDate(13, new java.sql.Date(staff.getStaffDOB().getTime()));
+
+            stmt.setString(14, staff.getStaffPassword());
+            stmt.setString(15, staff.getStaffRole());
+            stmt.setInt(16, staff.getStaffID());
+
+            // Execute update and check if any rows were affected
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+
+    
+    public boolean deleteStaff(int staffID) {
+        String sql = "DELETE FROM staff WHERE staffID = ?";
+        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, staffID);
+            int rowsAffected = ps.executeUpdate();
+            return rowsAffected > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
         }
     }
 }

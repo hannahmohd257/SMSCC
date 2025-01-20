@@ -14,7 +14,23 @@
     </servlet>
     <servlet>
         <servlet-name>EmployeeDetailsServlet</servlet-name>
-        <servlet-class>EmployeeDetailsServlet</servlet-class>
+        <servlet-class>servlet.EmployeeDetailsServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>EditEmployeeServlet</servlet-name>
+        <servlet-class>servlet.EditEmployeeServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateStaffServlet</servlet-name>
+        <servlet-class>servlet.UpdateStaffServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>UpdateEmployeeServlet</servlet-name>
+        <servlet-class>servlet.UpdateEmployeeServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ClockServlet</servlet-name>
+        <servlet-class>servlet.ClockServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
@@ -31,6 +47,22 @@
     <servlet-mapping>
         <servlet-name>EmployeeDetailsServlet</servlet-name>
         <url-pattern>/EmployeeDetailsServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>EditEmployeeServlet</servlet-name>
+        <url-pattern>/EditEmployeeServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateStaffServlet</servlet-name>
+        <url-pattern>/UpdateStaffServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>UpdateEmployeeServlet</servlet-name>
+        <url-pattern>/UpdateEmployeeServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ClockServlet</servlet-name>
+        <url-pattern>/ClockServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

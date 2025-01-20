@@ -5,15 +5,14 @@
 package servlet;
 
 import dao.StaffDAO;
-import model.Staff;
-
+import java.io.IOException;
+import java.util.List;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.List;
+import model.Staff;
 
 public class EmployeeListServlet extends HttpServlet {
 
@@ -22,21 +21,35 @@ public class EmployeeListServlet extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-
-        HttpSession session = request.getSession(false);
-
-         //Ensure the user is logged in and is a Finance Officer
-        if (session == null || session.getAttribute("staffRole") == null || 
-            !session.getAttribute("staffRole").toString().equals("Finance Officer")) {
-            response.sendRedirect("login.jsp");
-            return;
-        }
-
-        // Retrieve the list of employees
         List<Staff> employeeList = staffDAO.getAllEmployees();
-
-        // Pass the employee list to the JSP
         request.setAttribute("employeeList", employeeList);
+
         request.getRequestDispatcher("foEmployees.jsp").forward(request, response);
+    }
+
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        String action = request.getParameter("action");
+
+        if ("delete".equals(action)) {
+            String staffID = request.getParameter("staffID");
+            if (staffID != null && !staffID.isEmpty()) {
+                try {
+                    int staffIdInt = Integer.parseInt(staffID);
+                    boolean isDeleted = staffDAO.deleteStaff(staffIdInt);
+
+                    if (isDeleted) {
+                        response.sendRedirect("EmployeeListServlet?success=true");
+                    } else {
+                        response.sendRedirect("EmployeeListServlet?error=deleteFailed");
+                    }
+                } catch (NumberFormatException e) {
+                    response.sendRedirect("EmployeeListServlet?error=invalidIDFormat");
+                }
+            } else {
+                response.sendRedirect("EmployeeListServlet?error=invalidID");
+            }
+        }
     }
 }

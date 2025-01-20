@@ -16,7 +16,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
-import model.Role;
 import model.Salary;
 import model.Staff;
 
@@ -105,22 +104,22 @@ public class AddEmployeeServlet extends HttpServlet {
 
                 // Create Staff object
                 Staff newEmployee = new Staff(
-                    0,  // Assuming staffID is auto-generated
+                    0,  // staffID
                     (String) session.getAttribute("staffPassword"),
                     (String) session.getAttribute("staffRole"),
                     (String) session.getAttribute("staffName"),
                     (String) session.getAttribute("staffFullname"),
                     (String) session.getAttribute("staffEmail"),
+                    joinedDate, // staffJoinedDate
                     (String) session.getAttribute("staffPosition"),
                     (String) session.getAttribute("staffPhoneno"),
+                    dob, // staffDOB
                     (String) session.getAttribute("staffAddress"),
-                    joinedDate,
                     (String) session.getAttribute("staffGender"),
-                    dob,
                     (String) session.getAttribute("staffMaritalStatus"),
                     (String) session.getAttribute("staffEmpType"),
-                    staffBank,
-                    staffAccNo
+                    (String) session.getAttribute("staffBank"), // staffBank
+                    (String) session.getAttribute("staffAccNo")  // staffAccNo
                 );
 
                 // Save Staff object
@@ -161,5 +160,10 @@ public class AddEmployeeServlet extends HttpServlet {
                 response.sendRedirect("employeeError.jsp");
             }
         }
+    }
+    
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED, "GET method is not supported. Please use POST.");
     }
 }

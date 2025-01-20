@@ -4,16 +4,19 @@
     Author     : user
 --%>
 
+<%@page import="model.Staff"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
     // Retrieve staffFullname from session
     String staffFullname = (String) session.getAttribute("staffFullname");
+    Staff staff = (Staff) request.getAttribute("staff");
 %>
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <title>CC | Employee Overview</title>
     <style>
         body {
@@ -191,7 +194,26 @@
             color: white;
             border-radius: 5px;
         }
+        
+        .edit-btn {
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+        }
 
+        .edit-btn i {
+            margin-right: 5px;
+        }
+
+        .edit-btn:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -211,7 +233,7 @@
             <a href="logout.jsp" class="logout">Logout</a>
         </div>
 
-        <!-- Main Content -->
+        <!-- Main Content --> 
         <div class="content">
             <div class="header">
                 <h1><span class="name">Staff ID: ${staff.staffID}</span></h1>
@@ -220,7 +242,7 @@
             <div class="tabs">
                 <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=overview" class="active">Overview</a> |
                 <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=salary">Salary Details</a> |
-                <a href="foEmpPayslip.jsp">Payslips</a>
+                <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=payslip">Payslips</a>
             </div>
 
             <div class="employee-details">
@@ -228,6 +250,10 @@
                     <img src="#" alt="Profile Picture">
                     <p class="employee-info">Name: ${staff.staffFullname}</p>
                     <p class="employee-info">Position: ${staff.staffPosition}</p>
+                    <!-- Edit button -->
+                    <button class="edit-btn" onclick="window.location.href='UpdateStaffServlet?staffID=${staff.staffID}'">
+                        <i class="fas fa-edit"></i> Edit
+                    </button>
                 </div>
                 <div class="personal-details">
                     <h3>Personal Details</h3>

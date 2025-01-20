@@ -195,8 +195,8 @@
                 <p class="profile-name"><%= staffFullname %></p>
             </div>
             <ul class="nav-links">
-                <li><a href="foDashboard.jsp" class="active">Home</a></li>
-                <li><a href="EmployeeListServlet">Employees</a></li>
+                <li><a href="foDashboard.jsp">Home</a></li>
+                <li><a href="EmployeeListServlet" class="active">Employees</a></li>
                 <li><a href="foApprovals.jsp">Approvals</a></li>
                 <li><a href="foReports.jsp">Reports</a></li>
             </ul>
@@ -212,7 +212,7 @@
             <div class="tabs">
                 <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=overview">Overview</a> |
                 <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=salary" class="active">Salary Details</a> |
-                <a href="foEmpPayslip.jsp">Payslips</a>
+                <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=payslip">Payslips</a>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>

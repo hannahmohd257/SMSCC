@@ -23,33 +23,73 @@
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
+            height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
             background-color: #f4f4f9;
         }
-        .message-box {
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+        .modal-content {
             background-color: #28a745;
             color: white;
             padding: 20px;
             border-radius: 5px;
-            font-size: 18px;
             text-align: center;
+            max-width: 400px;
+            width: 100%;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.25);
         }
-        .message-box a {
-            color: white;
-            text-decoration: underline;
-            margin-top: 10px;
-            display: inline-block;
+        .modal-content p {
+            font-size: 18px;
+            margin: 0 0 20px;
+        }
+        .modal-content button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #fff;
+            color: #28a745;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .modal-content button:hover {
+            background-color: #e6e6e6;
         }
     </style>
 </head>
 <body>
-    <div class="message-box">
-        <p><%= message != null ? message : "Operation completed successfully!" %></p>
-        <a href="EmployeeListServlet">Go to Employee List</a>
+    <!-- Modal Structure -->
+    <div class="modal" id="successModal">
+        <div class="modal-content">
+            <p><%= message != null ? message : "Employee added successfully!" %></p>
+            <button onclick="redirectToEmployeeList()">Go to Employee List</button>
+        </div>
     </div>
+
+    <script>
+        // Show the modal when the page loads
+        window.onload = function () {
+            const modal = document.getElementById("successModal");
+            modal.style.display = "flex";
+        };
+
+        // Redirect function
+        function redirectToEmployeeList() {
+            window.location.href = "EmployeeListServlet";
+        }
+    </script>
 </body>
 </html>
-

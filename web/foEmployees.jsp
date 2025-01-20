@@ -163,10 +163,33 @@
         .add-button:hover {
             background-color: #6a7199;
         }
+        
+        .icon-button {
+            color: #4a4f77;
+            font-size: 18px;
+            margin-right: 10px;
+            text-decoration: none;
+            display: inline-block;
+        }
 
+        .icon-button:hover {
+            color: #2c2f48;
+        }
+        .icon-button trash {
+            text-decoration: none;
+            color: #333;
+            margin: 0 5px;
+        }
+        .icon-button trash:hover {
+            color: #d9534f; /* Red color on hover */
+        }
+        .icon-button i {
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
+    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
     <div class="container">
         <!-- Sidebar -->
         <aside class="sidebar">
@@ -176,40 +199,62 @@
             </div>
             <ul class="nav-links">
                 <li><a href="foDashboard.jsp">Home</a></li>
-                <li><a href="EmployeeListServlet"  class="active">Employees</a></li>
+                <li><a href="EmployeeListServlet" class="active">Employees</a></li>
                 <li><a href="foApprovals.jsp">Approvals</a></li>
                 <li><a href="foReports.jsp">Reports</a></li>
             </ul>
             <a href="logout.jsp" class="logout">Logout</a>
         </aside>
-    
 
         <main class="content">
             <div class="header">
                 <h2 style="display: inline-block;">Employees</h2>
                 <a href="foAddEmployee1.jsp" class="add-button">Add New Employee</a>
             </div>
+
             <table>
                 <thead>
-                <tr>
-                    <th>Staff ID</th>
-                    <th>Full Name</th>
-                    <th>Email</th>
-                    <th>Position</th>
-                </tr>
+                    <tr>
+                        <th>Staff ID</th>
+                        <th>Full Name</th>
+                        <th>Email</th>
+                        <th>Position</th>
+                        <th>Actions</th> <!-- Added Actions column for buttons -->
+                    </tr>
                 </thead>
                 <tbody>
-                <c:forEach var="employee" items="${employeeList}">
-                    <tr>
-                        <td>${employee.staffID}</td>
-                        <td><a href="EmployeeDetailsServlet?staffID=${employee.staffID}&viewType=overview">${employee.staffFullname}</a></td>
-                        <td>${employee.staffEmail}</td>
-                        <td>${employee.staffPosition}</td>
-                    </tr>
-                </c:forEach>
+                    <c:forEach var="employee" items="${employeeList}">
+                        <tr>
+                            <td>${employee.staffID}</td>
+                            <td><a href="EmployeeDetailsServlet?staffID=${employee.staffID}&viewType=overview">${employee.staffFullname}</a></td>
+                            <td>${employee.staffEmail}</td>
+                            <td>${employee.staffPosition}</td>
+                            <td>
+                                <!-- Edit Button with Icon -->
+                                <a href="UpdateStaffServlet?staffID=${employee.staffID}&editMode=true" class="icon-button">
+                                    <i class="fa fa-edit"></i>
+                                </a>
+
+                                <a href="EmployeeListServlet?action=delete&staffID=${employee.staffID}" 
+                                    class="icon-button trash" 
+                                    onclick="return confirmDelete('${employee.staffFullname}')">
+                                    <i class="fa fa-trash"></i>
+                                 </a>
+
+                            </td>
+                        </tr>
+                    </c:forEach>
                 </tbody>
             </table>
         </main>
     </div>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script>
+        function confirmDelete(staffName) {
+            var result = confirm("Are you sure you want to delete " + staffName + "? This action cannot be undone.");
+            return result; // If confirmed, will proceed with the delete, otherwise will cancel the action.
+        }
+    </script>
 </body>
+
 </html>

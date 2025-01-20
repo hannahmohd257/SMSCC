@@ -27,25 +27,25 @@ public class Staff {
 
     // Constructor
     public Staff(int staffID, String staffPassword, String staffRole, String staffName, String staffFullname, 
-                 String staffEmail, String staffPosition, String staffPhoneno, String staffAddress, 
-                 Date staffJoinedDate, String staffGender, Date staffDOB, String staffMaritalStatus, 
-                 String staffEmpType, String staffBank, String staffAccNo) {
-        this.staffID = staffID;
-        this.staffPassword = staffPassword;
-        this.staffRole = staffRole;
-        this.staffName = staffName;
-        this.staffFullname = staffFullname;
-        this.staffEmail = staffEmail;
-        this.staffPosition = staffPosition;
-        this.staffPhoneno = staffPhoneno;
-        this.staffAddress = staffAddress;
-        this.staffJoinedDate = staffJoinedDate;
-        this.staffGender = staffGender;
-        this.staffDOB = staffDOB;
-        this.staffMaritalStatus = staffMaritalStatus;
-        this.staffEmpType = staffEmpType;
-        this.staffBank = staffBank;
-        this.staffAccNo = staffAccNo;
+             String staffEmail, Date staffJoinedDate, String staffPosition, String staffPhoneno, 
+             Date staffDOB, String staffAddress, String staffGender, String staffMaritalStatus, 
+             String staffEmpType, String staffBank, String staffAccNo) {
+    this.staffID = staffID;
+    this.staffPassword = staffPassword;
+    this.staffRole = staffRole;
+    this.staffName = staffName;
+    this.staffFullname = staffFullname;
+    this.staffEmail = staffEmail;
+    this.staffJoinedDate = staffJoinedDate;
+    this.staffPosition = staffPosition;
+    this.staffPhoneno = staffPhoneno;
+    this.staffDOB = staffDOB;
+    this.staffAddress = staffAddress;
+    this.staffGender = staffGender;
+    this.staffMaritalStatus = staffMaritalStatus;
+    this.staffEmpType = staffEmpType;
+    this.staffBank = staffBank;
+    this.staffAccNo = staffAccNo;
     }
 
     // Default constructor

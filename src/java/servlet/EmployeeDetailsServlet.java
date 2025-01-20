@@ -1,3 +1,6 @@
+package servlet;
+
+
 
 import dao.SalaryDAO;
 import dao.StaffDAO;
@@ -22,6 +25,7 @@ public class EmployeeDetailsServlet extends HttpServlet {
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid staffID.");
             return;
         }
+        
 
         try {
             int staffId = Integer.parseInt(staffIdParam);
@@ -29,6 +33,11 @@ public class EmployeeDetailsServlet extends HttpServlet {
             // Fetch the staff and salary details using DAO methods
             Staff staff = staffDAO.getStaffByID(staffId);
             Salary salary = salaryDAO.getSalaryByStaffID(staffId);
+            
+            if (staff == null) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Staff not found.");
+                return;
+            }
 
             String viewType = request.getParameter("viewType");
 
@@ -36,13 +45,19 @@ public class EmployeeDetailsServlet extends HttpServlet {
                 request.setAttribute("salary", salary);
                 request.setAttribute("staffID", staffId);
                 request.getRequestDispatcher("foEmpSalaryDetails.jsp").forward(request, response);
-            } else {
+            } else if ("overview".equalsIgnoreCase(viewType)) {
                 request.setAttribute("staff", staff);
                 request.setAttribute("staffID", staffId);
                 request.getRequestDispatcher("foEmpOverview.jsp").forward(request, response);
+            } else {
+                request.setAttribute("payslip", staff);
+                request.setAttribute("staffID", staffId);
+                request.getRequestDispatcher("foEmpPayslips.jsp").forward(request, response);
             }
-        } catch (NumberFormatException e) {
-            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid staffID format.");
         }
+           
+        catch (NumberFormatException e) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Invalid staffID format.");
+        }  
     }
 }
