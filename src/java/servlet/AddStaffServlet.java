@@ -19,7 +19,7 @@ import javax.servlet.http.HttpSession;
 import model.Salary;
 import model.Staff;
 
-public class AddEmployeeServlet extends HttpServlet {
+public class AddStaffServlet extends HttpServlet {
 
     private StaffDAO staffDAO = new StaffDAO();  // StaffDAO for database interaction
 
@@ -141,7 +141,7 @@ public class AddEmployeeServlet extends HttpServlet {
                     if (salarySaved) {
                         session.setAttribute("message", "Employee and salary added successfully!");
                         session.invalidate();
-                        response.sendRedirect("employeeSuccess.jsp");
+                        response.sendRedirect("staffAddSuccess.jsp");
                     } else {
                         session.setAttribute("message", "Error: Salary could not be added.");
                         response.sendRedirect("employeeError.jsp");

@@ -310,7 +310,7 @@
             </div>
             <ul class="nav-links">
                 <li><a href="foDashboard.jsp">Home</a></li>
-                <li><a href="EmployeeListServlet" class="active">Employees</a></li>
+                <li><a href="StaffListServlet" class="active">Employees</a></li>
                 <li><a href="foApprovals.jsp">Approvals</a></li>
                 <li><a href="foReports.jsp">Reports</a></li>
             </ul>
@@ -324,12 +324,12 @@
             </div>
 
             <div class="tabs">
-                <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=overview" class="active">Overview</a> |
-                <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=salary">Salary Details</a> |
-                <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=payslip">Payslips</a>
+                <a href="StaffDetailsServlet?staffID=${staff.staffID}&viewType=overview" class="active">Overview</a> |
+                <a href="StaffDetailsServlet?staffID=${staff.staffID}&viewType=salary">Salary Details</a> |
+                <a href="StaffDetailsServlet?staffID=${staff.staffID}&viewType=payslip">Payslips</a>
             </div>    
 
-            <h2>Update Employee Details</h2>
+            <h2>Update Staff Details</h2>
             <form action="UpdateStaffServlet" method="post">
                 <input type="hidden" name="staffID" value="${staff.staffID}">
 
@@ -394,7 +394,7 @@
                 </select>
 
                 <button type="submit">Update</button>
-                <button type="button" class="btn-secondary" onclick="window.location.href='EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=overview'">Cancel</button>
+                <button type="button" class="btn-secondary" onclick="window.location.href='StaffDetailsServlet?staffID=${staff.staffID}&viewType=overview'">Cancel</button>
             </form>
         </div>
     </div>

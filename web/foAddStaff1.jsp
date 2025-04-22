@@ -1,19 +1,19 @@
 <%-- 
-    Document   : foAddEmployee4
-    Created on : 17 Jan 2025, 3:10:49 am
+    Document   : foAddEmployee
+    Created on : 17 Jan 2025, 3:07:49 am
     Author     : user
 --%>
 
-<%@page import="model.Role"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
-<%@ page import="java.util.*" %>
+<%@page import="java.sql.Date"%>
+<%@page contentType="text/html;charset=UTF-8" language="java" %>
 <%
-    String staffFullname = request.getParameter("staffFullname");
+    // Retrieve session attributes
+    String staffFullname = (String) session.getAttribute("staffFullname");
 %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CC | Add New Employee - Step 4</title>
+    <title>CC | Add New Staff</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -224,7 +224,7 @@
             </div>
             <ul class="nav-links">
                 <li><a href="foDashboard.jsp">Home</a></li>
-                <li><a href="EmployeeListServlet" class="active">Employees</a></li>
+                <li><a href="StaffListServlet" class="active">Staff</a></li>
                 <li><a href="foApprovals.jsp">Approvals</a></li>
                 <li><a href="foReports.jsp">Reports</a></li>
             </ul>
@@ -233,12 +233,11 @@
 
         <!-- Main Content -->
         <div class="container-main">
-            <h2>Step 4: Payment Info</h2>
-
+            <h2>Step 1: Basics</h2>
             <!-- Navigation Steps -->
             <div class="steps">
                 <div class="step">
-                    <div class="circle">1</div>
+                    <div class="circle active">1</div>
                     <div class="step-title">Basics</div>
                 </div>
                 <div class="step">
@@ -250,32 +249,41 @@
                     <div class="step-title">Personal Info</div>
                 </div>
                 <div class="step">
-                    <div class="circle active">4</div>
+                    <div class="circle">4</div>
                     <div class="step-title">Payment Info</div>
                 </div>
             </div>
 
-            <!-- Form -->
+            <!-- Form Section -->
             <form action="AddEmployeeServlet" method="post">
-                <input type="hidden" name="step" value="4">
+                <input type="hidden" name="step" value="1">
+                
+                <label for="staffFullname">Staff Full Name</label>
+                <input type="text" id="staffFullname" name="staffFullname" 
+                    value="${sessionScope.staffFullname}" required>
 
-                <% if(request.getAttribute("error") != null) { %>
-                    <div class="error-message">
-                        <%= request.getAttribute("error") %>
-                    </div>
-                <% } %>
+                <label for="staffName">Staff Username</label>
+                <input type="text" id="staffName" name="staffName" 
+                    value="${sessionScope.staffName}" required>
 
-                <label for="staffBank">Bank Name:</label>
-                <input type="text" id="staffBank" name="staffBank" 
-                    value="${sessionScope.staffBank}" required><br>
+                <label for="staffJoinedDate">Joined Date</label>
+                <input type="date" id="staffJoinedDate" name="staffJoinedDate" 
+                    value="${sessionScope.staffJoinedDate}" required>
 
-                <label for="staffAccNo">Bank Account:</label>
-                <input type="text" id="staffAccNo" name="staffAccNo" 
-                    value="${sessionScope.staffAccNo}" required><br>
+                <label for="staffGender">Gender</label>
+                <select id="staffGender" name="staffGender" required>
+                    <option value="" disabled ${empty sessionScope.staffGender ? 'selected' : ''}>Select Gender</option>
+                    <option value="Male" ${sessionScope.staffGender == 'Male' ? 'selected' : ''}>Male</option>
+                    <option value="Female" ${sessionScope.staffGender == 'Female' ? 'selected' : ''}>Female</option>
+                </select>
+
+                <label for="staffPosition">Position</label>
+                <input type="text" id="staffPosition" name="staffPosition" 
+                    value="${sessionScope.staffPosition}" required>
 
                 <div class="button-container">
-                    <button type="button" onclick="window.history.back()">Back</button>
-                    <button type="submit">Submit</button>
+                    <button type="reset" class="cancel-btn">Cancel</button>
+                    <button type="submit">Next</button>
                 </div>
             </form>
         </div>

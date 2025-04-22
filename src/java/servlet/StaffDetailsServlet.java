@@ -12,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import model.Salary;
 import model.Staff;
 
-public class EmployeeDetailsServlet extends HttpServlet {
+public class StaffDetailsServlet extends HttpServlet {
     private StaffDAO staffDAO = new StaffDAO();
     private SalaryDAO salaryDAO = new SalaryDAO();
 
@@ -44,15 +44,15 @@ public class EmployeeDetailsServlet extends HttpServlet {
             if ("salary".equalsIgnoreCase(viewType)) {
                 request.setAttribute("salary", salary);
                 request.setAttribute("staffID", staffId);
-                request.getRequestDispatcher("foEmpSalaryDetails.jsp").forward(request, response);
+                request.getRequestDispatcher("foStaffSalaryDetails.jsp").forward(request, response);
             } else if ("overview".equalsIgnoreCase(viewType)) {
                 request.setAttribute("staff", staff);
                 request.setAttribute("staffID", staffId);
-                request.getRequestDispatcher("foEmpOverview.jsp").forward(request, response);
+                request.getRequestDispatcher("foStaffOverview.jsp").forward(request, response);
             } else {
                 request.setAttribute("payslip", staff);
                 request.setAttribute("staffID", staffId);
-                request.getRequestDispatcher("foEmpPayslips.jsp").forward(request, response);
+                request.getRequestDispatcher("foStaffPayslip.jsp").forward(request, response);
             }
         }
            

@@ -15,7 +15,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CC | Employee Salary Details</title>
+    <title>CC | Staff Salary Details</title>
     <style>
         body {
             margin: 0;
@@ -196,7 +196,7 @@
             </div>
             <ul class="nav-links">
                 <li><a href="foDashboard.jsp">Home</a></li>
-                <li><a href="EmployeeListServlet" class="active">Employees</a></li>
+                <li><a href="StaffListServlet" class="active">Staffs</a></li>
                 <li><a href="foApprovals.jsp">Approvals</a></li>
                 <li><a href="foReports.jsp">Reports</a></li>
             </ul>
@@ -210,9 +210,9 @@
             </div>
 
             <div class="tabs">
-                <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=overview">Overview</a> |
-                <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=salary" class="active">Salary Details</a> |
-                <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=payslip">Payslips</a>
+                <a href="StaffDetailsServlet?staffID=${staff.staffID}&viewType=overview">Overview</a> |
+                <a href="StaffDetailsServlet?staffID=${staff.staffID}&viewType=salary">Salary Details</a> |
+                <a href="StaffDetailsServlet?staffID=${staff.staffID}&viewType=payslip" class="active">Payslips</a>
             </div>
             <div style="display: flex; justify-content: space-between; align-items: center;">
                 <div>

@@ -174,14 +174,44 @@ public class StaffDAO {
 
     
     public boolean deleteStaff(int staffID) {
-        String sql = "DELETE FROM staff WHERE staffID = ?";
-        try (Connection conn = getConnection(); PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, staffID);
-            int rowsAffected = ps.executeUpdate();
-            return rowsAffected > 0;
+        Connection connection = null;
+        PreparedStatement salaryStmt = null;
+        PreparedStatement staffStmt = null;
+        boolean isDeleted = false;
+
+        try {
+            connection = DBConnection.getConnection();
+            connection.setAutoCommit(false);
+
+            String deleteSalarySQL = "DELETE FROM salary WHERE staffID = ?";
+            salaryStmt = connection.prepareStatement(deleteSalarySQL);
+            salaryStmt.setInt(1, staffID);
+            salaryStmt.executeUpdate();
+
+            String deleteStaffSQL = "DELETE FROM staff WHERE staffID = ?";
+            staffStmt = connection.prepareStatement(deleteStaffSQL);
+            staffStmt.setInt(1, staffID);
+            int rowsAffected = staffStmt.executeUpdate();
+
+            if (rowsAffected > 0) {
+                isDeleted = true;
+            }
+
+            connection.commit();
         } catch (SQLException e) {
             e.printStackTrace();
-            return false;
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                } catch (SQLException rollbackEx) {
+                    rollbackEx.printStackTrace();
+                }
+            }
+        } finally {
+            DBConnection.close(salaryStmt, connection);
+            DBConnection.close(staffStmt);
         }
+
+        return isDeleted;
     }
 }

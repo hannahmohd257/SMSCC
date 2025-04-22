@@ -5,64 +5,64 @@
         <servlet-class>servlet.LoginServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>EmployeeListServlet</servlet-name>
-        <servlet-class>servlet.EmployeeListServlet</servlet-class>
+        <servlet-name>StaffListServlet</servlet-name>
+        <servlet-class>servlet.StaffListServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>AddEmployeeServlet</servlet-name>
-        <servlet-class>servlet.AddEmployeeServlet</servlet-class>
+        <servlet-name>AddStaffServlet</servlet-name>
+        <servlet-class>servlet.AddStaffServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>EmployeeDetailsServlet</servlet-name>
-        <servlet-class>servlet.EmployeeDetailsServlet</servlet-class>
+        <servlet-name>StaffDetailsServlet</servlet-name>
+        <servlet-class>servlet.StaffDetailsServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>EditEmployeeServlet</servlet-name>
-        <servlet-class>servlet.EditEmployeeServlet</servlet-class>
+        <servlet-name>EditStaffServlet</servlet-name>
+        <servlet-class>servlet.EditStaffServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>UpdateStaffServlet</servlet-name>
         <servlet-class>servlet.UpdateStaffServlet</servlet-class>
     </servlet>
     <servlet>
-        <servlet-name>UpdateEmployeeServlet</servlet-name>
-        <servlet-class>servlet.UpdateEmployeeServlet</servlet-class>
-    </servlet>
-    <servlet>
         <servlet-name>ClockServlet</servlet-name>
         <servlet-class>servlet.ClockServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>GeneratePayslipServlet</servlet-name>
+        <servlet-class>servlet.GeneratePayslipServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>LoginServlet</servlet-name>
         <url-pattern>/LoginServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>EmployeeListServlet</servlet-name>
-        <url-pattern>/EmployeeListServlet</url-pattern>
+        <servlet-name>StaffListServlet</servlet-name>
+        <url-pattern>/StaffListServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>AddEmployeeServlet</servlet-name>
-        <url-pattern>/AddEmployeeServlet</url-pattern>
+        <servlet-name>AddStaffServlet</servlet-name>
+        <url-pattern>/AddStaffServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>EmployeeDetailsServlet</servlet-name>
-        <url-pattern>/EmployeeDetailsServlet</url-pattern>
+        <servlet-name>StaffDetailsServlet</servlet-name>
+        <url-pattern>/StaffDetailsServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>EditEmployeeServlet</servlet-name>
-        <url-pattern>/EditEmployeeServlet</url-pattern>
+        <servlet-name>EditStaffServlet</servlet-name>
+        <url-pattern>/EditStaffServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>UpdateStaffServlet</servlet-name>
         <url-pattern>/UpdateStaffServlet</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
-        <servlet-name>UpdateEmployeeServlet</servlet-name>
-        <url-pattern>/UpdateEmployeeServlet</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
         <servlet-name>ClockServlet</servlet-name>
         <url-pattern>/ClockServlet</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>GeneratePayslipServlet</servlet-name>
+        <url-pattern>/GeneratePayslipServlet</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

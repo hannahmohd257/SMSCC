@@ -12,7 +12,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CC | Add New Employee - Step 2</title>
+    <title>CC | Add New Staff - Step 2</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -223,7 +223,7 @@
             </div>
             <ul class="nav-links">
                 <li><a href="foDashboard.jsp">Home</a></li>
-                <li><a href="EmployeeListServlet" class="active">Employees</a></li>
+                <li><a href="StaffListServlet" class="active">Staff</a></li>
                 <li><a href="foApprovals.jsp">Approvals</a></li>
                 <li><a href="foReports.jsp">Reports</a></li>
             </ul>

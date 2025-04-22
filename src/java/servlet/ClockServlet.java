@@ -4,62 +4,83 @@
  */
 package servlet;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.sql.*;
+import java.time.DayOfWeek;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import javax.servlet.ServletException;
+import javax.servlet.http.*;
+import model.Staff;
 import util.DBConnection;
 
 public class ClockServlet extends HttpServlet {
-    protected void doPost(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
+        
         String action = request.getParameter("action");
         HttpSession session = request.getSession();
-        int staffID = (int) session.getAttribute("staffID"); // Ensure staffId is set in the session
+        
+        // Check if staffID is available
+        Integer staffID = (Integer) session.getAttribute("staffID");
+        if (staffID == null) {
+            response.sendRedirect("login.jsp"); // or any login page
+            return;
+        }
 
         try (Connection conn = DBConnection.getConnection()) {
             PreparedStatement ps;
+            ResultSet rs;
+
+            // Get current timestamp info
+            LocalDateTime now = LocalDateTime.now();
+            String currentDate = now.toLocalDate().toString(); // yyyy-MM-dd
+            String currentTime = now.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
+            DayOfWeek dayOfWeek = now.getDayOfWeek();
+
+            System.out.println("Staff ID " + staffID + " attempted " + action + " on " + currentDate + " (" + dayOfWeek + ") at " + currentTime);
 
             if ("clockin".equals(action)) {
-                // Check if already clocked in for today
+                // Check if already clocked in
                 ps = conn.prepareStatement("SELECT attendanceClockIn FROM attendance WHERE staffID = ? AND attendanceDate = CURDATE()");
                 ps.setInt(1, staffID);
-                ResultSet rs = ps.executeQuery();
+                rs = ps.executeQuery();
 
                 if (rs.next() && rs.getTimestamp("attendanceClockIn") != null) {
-                    response.getWriter().write("You have already clocked in today!");
+                    session.setAttribute("message", "You have already clocked in today.");
                 } else {
-                    // Insert clock-in record
+                    // Insert new attendance row
                     ps = conn.prepareStatement("INSERT INTO attendance (staffID, attendanceClockIn, attendanceDate) VALUES (?, NOW(), CURDATE())");
                     ps.setInt(1, staffID);
                     ps.executeUpdate();
-                    response.getWriter().write("Clock In successful!");
+                    session.setAttribute("message", "Clock In successful at " + currentTime + " (" + dayOfWeek + ")");
                 }
+
             } else if ("clockout".equals(action)) {
-                // Check if clocked in but not yet clocked out
+                // Check if clock-in exists and not yet clocked out
                 ps = conn.prepareStatement("SELECT attendanceClockOut FROM attendance WHERE staffID = ? AND attendanceDate = CURDATE()");
                 ps.setInt(1, staffID);
-                ResultSet rs = ps.executeQuery();
+                rs = ps.executeQuery();
 
                 if (rs.next() && rs.getTimestamp("attendanceClockOut") == null) {
-                    // Update clock-out time
                     ps = conn.prepareStatement("UPDATE attendance SET attendanceClockOut = NOW() WHERE staffID = ? AND attendanceDate = CURDATE()");
                     ps.setInt(1, staffID);
                     ps.executeUpdate();
-                    response.getWriter().write("Clock Out successful!");
+                    session.setAttribute("message", "Clock Out successful at " + currentTime + " (" + dayOfWeek + ")");
                 } else {
-                    response.getWriter().write("You need to clock in before clocking out!");
+                    session.setAttribute("message", "You need to clock in before clocking out.");
                 }
+
             } else {
-                response.getWriter().write("Invalid action!");
+                session.setAttribute("message", "Invalid action.");
             }
+
         } catch (SQLException e) {
+            e.printStackTrace();
             throw new ServletException("Database error: " + e.getMessage(), e);
         }
+
+        // Redirect back to clockin page after processing
+        response.sendRedirect("staffClockIn.jsp");
     }
 }

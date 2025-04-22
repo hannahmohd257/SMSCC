@@ -217,7 +217,7 @@
             </div>
             <ul class="nav-links">
                 <li><a href="foDashboard.jsp" class="active">Home</a></li>
-                <li><a href="EmployeeListServlet">Employees</a></li>
+                <li><a href="StaffListServlet">Staffs</a></li>
                 <li><a href="foApprovals.jsp">Approvals</a></li>
                 <li><a href="foReports.jsp">Reports</a></li>
             </ul>
@@ -234,9 +234,9 @@
             <section class="section">
                 <div>
                     <h2>Process Pay Run</h2>
-                    <p>Employees Net Pay: <strong>Processing</strong></p>
+                    <p>Staff Net Pay: <strong>Processing</strong></p>
                     <p>Payment Date: <strong>30/1/2025</strong></p>
-                    <p>No. of Employees: <strong>12</strong></p>
+                    <p>No. of Staff <strong>12</strong></p>
                 </div>
                 <button>Create Pay Run</button>
             </section>
@@ -253,9 +253,9 @@
                     <div class="legend-label">Deductions: RM____</div>
                 </div>
                 <div class="section-chart-container">
-                    <h2>Active Employees</h2>
+                    <h2>Active Staffs</h2>
                     <p class="employee-count">12</p>
-                    <button><a href="EmployeeListServlet">View Employees</a></button>
+                    <button><a href="StaffListServlet">View Staff</a></button>
                 </div>
             </section>
         </main>

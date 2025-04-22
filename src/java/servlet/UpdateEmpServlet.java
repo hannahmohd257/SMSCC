@@ -14,7 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import model.Staff;
 
-public class UpdateStaffServlet extends HttpServlet {
+public class UpdateEmpServlet extends HttpServlet {
     private StaffDAO staffDAO = new StaffDAO();
 
     @Override
@@ -32,7 +32,7 @@ public class UpdateStaffServlet extends HttpServlet {
         request.setAttribute("staff", staff);
 
         // Forward the request to the editStaff.jsp page
-        request.getRequestDispatcher("foEditEmpOverview.jsp").forward(request, response);
+        request.getRequestDispatcher("foEditStaffOverview.jsp").forward(request, response);
     }
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -69,7 +69,7 @@ public class UpdateStaffServlet extends HttpServlet {
 
             if (success) {
                 // Redirect to the overview page
-                response.sendRedirect("EmployeeDetailsServlet?staffID=" + staffID + "&viewType=overview");
+                response.sendRedirect("StaffDetailsServlet?staffID=" + staffID + "&viewType=overview");
             } else {
                 // Handle failure
                 response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR, "Failed to update staff details.");

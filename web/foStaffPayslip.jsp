@@ -4,7 +4,9 @@
     Author     : user
 --%>
 
+<%@page import="model.Payslip"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
+<jsp:useBean id="payslip" type="Payslip" scope="request" />
 <%
     // Retrieve staffFullname from session
     String staffFullname = (String) session.getAttribute("staffFullname");
@@ -15,7 +17,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CC | Employee Payslip</title>
+    <title>CC | Staff Payslip</title>
     <style>
         body {
             margin: 0;
@@ -196,7 +198,7 @@
             </div>
             <ul class="nav-links">
                 <li><a href="foDashboard.jsp">Home</a></li>
-                <li><a href="EmployeeListServlet" class="active">Employees</a></li>
+                <li><a href="StaffListServlet" class="active">Staffs</a></li>
                 <li><a href="foApprovals.jsp">Approvals</a></li>
                 <li><a href="foReports.jsp">Reports</a></li>
             </ul>
@@ -206,30 +208,25 @@
         <!-- Main Content -->
         <div class="content">
             <div class="header">
-                <h1>Employee: <span class="name">Staff Name</span></h1>
-                <h2>Staff ID: xxxxx</h2>
+                <h2>Staff ID: ${staff.staffID}</h2>
             </div>
 
             <div class="tabs">
-                <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=overview">Overview</a> |
-                <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=salary">Salary Details</a> |
-                <a href="EmployeeDetailsServlet?staffID=${staff.staffID}&viewType=payslip" class="active">Payslips</a>
+                <a href="StaffDetailsServlet?staffID=${staff.staffID}&viewType=overview">Overview</a> |
+                <a href="StaffDetailsServlet?staffID=${staff.staffID}&viewType=salary">Salary Details</a> |
+                <a href="StaffDetailsServlet?staffID=${staff.staffID}&viewType=payslip" class="active">Payslips</a>
             </div>
-            <div style="display: flex; justify-content: space-between; align-items: center;">
-                <div>
-                    <h3>Payment Date</h3>
-                        <p>Basic</p>
-                        <p>Overtime</p>
-                        <p>Deductions</p>
-                        <p>Net Pay</p>
-                </div>
+            <div style="//display: flex; justify-content: space-between; align-items: center;">
                 <div>
                     <h3>Payslip</h3>
-                    <!-- You can add the values of the monthly amounts here, e.g. -->
-                    <p>RM3500</p>
-                    <p>RM500</p>
-                    <p>-RM100</p>
-                    <p>RM3900</p>
+                    <h1>Payslip for <%= payslip.getPayslipMonth() %></h1>
+                    <p>Payslip ID: <%= payslip.getPayslipID() %></p>
+                    <p>Staff ID: <%= payslip.getStaffID() %></p>
+                    <p>Deduction ID: <%= payslip.getDeductionID() %></p>
+                    <p>Salary Amount: <%= payslip.getSalaryID() %></p>
+                    <p>Overtime Pay: <%= payslip.getPayslipOvertimePay() %></p>
+                    <p>Net Pay: <%= payslip.getPayslipNetPay() %></p>
+                    <p>Payslip Created At: <%= payslip.getPayslipCreatedAt() %></p>
                 </div>
             </div>
         </div>

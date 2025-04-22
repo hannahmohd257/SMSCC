@@ -74,8 +74,8 @@
     <!-- Modal Structure -->
     <div class="modal" id="successModal">
         <div class="modal-content">
-            <p><%= message != null ? message : "Employee added successfully!" %></p>
-            <button onclick="redirectToEmployeeList()">Go to Employee List</button>
+            <p><%= message != null ? message : "Staff added successfully!" %></p>
+            <button onclick="redirectToEmployeeStaff()">Go to Staff List</button>
         </div>
     </div>
 
@@ -87,7 +87,7 @@
         };
 
         // Redirect function
-        function redirectToEmployeeList() {
+        function redirectToStaffList() {
             window.location.href = "EmployeeListServlet";
         }
     </script>

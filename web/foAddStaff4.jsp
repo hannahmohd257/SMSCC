@@ -1,19 +1,19 @@
 <%-- 
-    Document   : foAddEmployee3
-    Created on : 17 Jan 2025, 3:10:41 am
+    Document   : foAddEmployee4
+    Created on : 17 Jan 2025, 3:10:49 am
     Author     : user
 --%>
 
 <%@page import="model.Role"%>
-<%@page import="java.sql.Date"%>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page import="java.util.*" %>
 <%
     String staffFullname = request.getParameter("staffFullname");
 %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CC | Add New Employee - Step 3</title>
+    <title>CC | Add New Staff - Step 4</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -224,7 +224,7 @@
             </div>
             <ul class="nav-links">
                 <li><a href="foDashboard.jsp">Home</a></li>
-                <li><a href="EmployeeListServlet" class="active">Employees</a></li>
+                <li><a href="StaffListServlet" class="active">Staffs</a></li>
                 <li><a href="foApprovals.jsp">Approvals</a></li>
                 <li><a href="foReports.jsp">Reports</a></li>
             </ul>
@@ -233,7 +233,7 @@
 
         <!-- Main Content -->
         <div class="container-main">
-            <h2>Step 3: Personal Info</h2>
+            <h2>Step 4: Payment Info</h2>
 
             <!-- Navigation Steps -->
             <div class="steps">
@@ -246,66 +246,36 @@
                     <div class="step-title">Salary Details</div>
                 </div>
                 <div class="step">
-                    <div class="circle active">3</div>
+                    <div class="circle">3</div>
                     <div class="step-title">Personal Info</div>
                 </div>
                 <div class="step">
-                    <div class="circle">4</div>
+                    <div class="circle active">4</div>
                     <div class="step-title">Payment Info</div>
                 </div>
             </div>
 
             <!-- Form -->
             <form action="AddEmployeeServlet" method="post">
-                <input type="hidden" name="step" value="3">
+                <input type="hidden" name="step" value="4">
 
-                <label for="staffRole">Role:</label>
-                <select id="staffRole" name="staffRole" required>
-                    <option value="">Select a role</option>
-                    <option value="General Staff" ${sessionScope.staffRole == 'General Staff' ? 'selected' : ''}>General Staff</option>
-                    <option value="Finance Officer" ${sessionScope.staffRole == 'Finance Officer' ? 'selected' : ''}>Finance Officer</option>
-                    <option value="Manager" ${sessionScope.staffRole == 'Manager' ? 'selected' : ''}>Manager</option>
-                </select><br>
+                <% if(request.getAttribute("error") != null) { %>
+                    <div class="error-message">
+                        <%= request.getAttribute("error") %>
+                    </div>
+                <% } %>
 
-                <label>Password:</label>
-                <input type="text" id="staffPassword" name="staffPassword" 
-                    value="${sessionScope.staffPassword}" required><br>
+                <label for="staffBank">Bank Name:</label>
+                <input type="text" id="staffBank" name="staffBank" 
+                    value="${sessionScope.staffBank}" required><br>
 
-                <label>Date of Birth:</label>
-                <input type="date" id="staffDOB" name="staffDOB" 
-                    value="${sessionScope.staffDOB}" required><br>
-
-                <label>Address:</label>
-                <textarea name="staffAddress" id="staffAddress" style="width: 300px; height: 50px;" 
-                    required>${sessionScope.staffAddress}</textarea><br>
-
-                <label>Contact Number:</label>
-                <input type="text" id="staffPhoneno" name="staffPhoneno" 
-                    value="${sessionScope.staffPhoneno}" required><br>
-
-                <label>Email:</label>
-                <input type="email" id="staffEmail" name="staffEmail" 
-                    value="${sessionScope.staffEmail}" required><br>
-
-                <label for="staffMaritalStatus">Marital Status:</label>
-                <select id="staffMaritalStatus" name="staffMaritalStatus" required>
-                    <option value="">Select marital status</option>
-                    <option value="Single" ${sessionScope.staffMaritalStatus == 'Single' ? 'selected' : ''}>Single</option>
-                    <option value="Married" ${sessionScope.staffMaritalStatus == 'Married' ? 'selected' : ''}>Married</option>
-                    <option value="Divorced" ${sessionScope.staffMaritalStatus == 'Divorced' ? 'selected' : ''}>Divorced</option>
-                </select><br>
-
-                <label for="staffEmpType">Employment Type:</label>
-                <select id="staffEmpType" name="staffEmpType" required>
-                    <option value="">Select employment type</option>
-                    <option value="Full-Time" ${sessionScope.staffEmpType == 'Full-Time' ? 'selected' : ''}>Full-Time</option>
-                    <option value="Part-Time" ${sessionScope.staffEmpType == 'Part-Time' ? 'selected' : ''}>Part-Time</option>
-                    <option value="Contract" ${sessionScope.staffEmpType == 'Contract' ? 'selected' : ''}>Contract</option>
-                </select><br>
+                <label for="staffAccNo">Bank Account:</label>
+                <input type="text" id="staffAccNo" name="staffAccNo" 
+                    value="${sessionScope.staffAccNo}" required><br>
 
                 <div class="button-container">
                     <button type="button" onclick="window.history.back()">Back</button>
-                    <button type="submit">Next</button>
+                    <button type="submit">Submit</button>
                 </div>
             </form>
         </div>

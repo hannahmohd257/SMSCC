@@ -7,6 +7,8 @@ package util;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 
 public class DBConnection {
@@ -26,5 +28,46 @@ public class DBConnection {
             throw new SQLException("Failed to connect to database: " + e.getMessage());
         }
         return connection;
+    }
+    
+    public static void close(Connection connection) {
+        if (connection != null) {
+            try {
+                connection.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void close(PreparedStatement preparedStatement) {
+        if (preparedStatement != null) {
+            try {
+                preparedStatement.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void close(ResultSet resultSet) {
+        if (resultSet != null) {
+            try {
+                resultSet.close();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void close(PreparedStatement preparedStatement, Connection connection) {
+        close(preparedStatement);
+        close(connection);
+    }
+
+    public static void close(ResultSet resultSet, PreparedStatement preparedStatement, Connection connection) {
+        close(resultSet);
+        close(preparedStatement);
+        close(connection);
     }
 }

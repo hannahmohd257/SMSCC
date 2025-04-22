@@ -14,7 +14,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CC | Employee List</title>
+    <title>CC | Staff List</title>
     <style>
         body {
             margin: 0;
@@ -199,7 +199,7 @@
             </div>
             <ul class="nav-links">
                 <li><a href="foDashboard.jsp">Home</a></li>
-                <li><a href="EmployeeListServlet" class="active">Employees</a></li>
+                <li><a href="StaffListServlet" class="active">Staffs</a></li>
                 <li><a href="foApprovals.jsp">Approvals</a></li>
                 <li><a href="foReports.jsp">Reports</a></li>
             </ul>
@@ -208,8 +208,8 @@
 
         <main class="content">
             <div class="header">
-                <h2 style="display: inline-block;">Employees</h2>
-                <a href="foAddEmployee1.jsp" class="add-button">Add New Employee</a>
+                <h2 style="display: inline-block;">Staffs</h2>
+                <a href="foAddEmployee1.jsp" class="add-button">Add New Staff</a>
             </div>
 
             <table>
@@ -223,21 +223,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="employee" items="${employeeList}">
+                    <c:forEach var="staff" items="${staffList}">
                         <tr>
-                            <td>${employee.staffID}</td>
-                            <td><a href="EmployeeDetailsServlet?staffID=${employee.staffID}&viewType=overview">${employee.staffFullname}</a></td>
-                            <td>${employee.staffEmail}</td>
-                            <td>${employee.staffPosition}</td>
+                            <td>${staff.staffID}</td>
+                            <td><a href="StaffDetailsServlet?staffID=${staff.staffID}&viewType=overview">${staff.staffFullname}</a></td>
+                            <td>${staff.staffEmail}</td>
+                            <td>${staff.staffPosition}</td>
                             <td>
                                 <!-- Edit Button with Icon -->
-                                <a href="UpdateStaffServlet?staffID=${employee.staffID}&editMode=true" class="icon-button">
+                                <a href="UpdateStaffServlet?staffID=${staff.staffID}&editMode=true" class="icon-button">
                                     <i class="fa fa-edit"></i>
                                 </a>
 
-                                <a href="EmployeeListServlet?action=delete&staffID=${employee.staffID}" 
+                                <a href="EmployeeListServlet?action=delete&staffID=${staff.staffID}" 
                                     class="icon-button trash" 
-                                    onclick="return confirmDelete('${employee.staffFullname}')">
+                                    onclick="return confirmDelete('${staff.staffFullname}')">
                                     <i class="fa fa-trash"></i>
                                  </a>
 

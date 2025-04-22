@@ -4,6 +4,9 @@
     Author     : user
 --%>
 
+<%@page import="java.time.DayOfWeek"%>
+<%@page import="java.time.format.DateTimeFormatter"%>
+<%@page import="java.time.LocalDateTime"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
     // Retrieve staffName from session
@@ -263,14 +266,31 @@
                 <h1>Welcome, <span class="name"><%= staffName %></span>!</h1>
             </header>
 
-            <!-- Process Pay Run Section -->
+            <!-- Clock In Section -->
             <section class="section">
                 <div>
                     <h2>Clock In Page</h2>
-                    <p>Today's Date: <strong>30/1/2025</strong></p>
-                    <p>Time: <strong>09:12:23</strong></p>
+
+                    <%
+                        // Get current date, time, and day
+                        LocalDateTime now = LocalDateTime.now();
+                        DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                        DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss");
+                        String currentDate = now.format(dateFormatter);
+                        String currentTime = now.format(timeFormatter);
+                        DayOfWeek dayOfWeek = now.getDayOfWeek();
+                    %>
+
+                    <p>Date: <strong><%= currentDate %></strong></p>
+                    <p>Day: <strong><%= dayOfWeek %></strong></p>
+                    <p>Time: <strong><%= currentTime %></strong></p>
                 </div>
-                <button>Clock In</button>
+
+                <!-- Clock In button leads to ClockServlet -->
+                <form action="ClockServlet" method="get">
+                    <input type="hidden" name="action" value="clockin">
+                    <button type="submit">Clock In</button>
+                </form>
             </section>
 
             <!-- Payroll Summary Section -->
