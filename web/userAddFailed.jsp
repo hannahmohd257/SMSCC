@@ -1,14 +1,13 @@
 <%-- 
-    Document   : employeeSuccess
-    Created on : 20 Jan 2025, 1:53:23?am
+    Document   : userAddFailed
+    Created on : 20 May 2025, 5:47:48?pm
     Author     : user
 --%>
-
 <%@ page import="javax.servlet.http.HttpSession" %>
 <%
-    // Retrieve the success message from the session
-    String message = (String) session.getAttribute("message");
-    session.removeAttribute("message"); // Clear the message after displaying
+    // Retrieve the error message from the session
+    String errorMessage = (String) session.getAttribute("errorMessage");
+    session.removeAttribute("errorMessage"); // Clear after use
 %>
 
 <!DOCTYPE html>
@@ -17,7 +16,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Success</title>
+    <title>User Add Failed</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -29,7 +28,6 @@
             align-items: center;
             background-color: #f4f4f9;
         }
-        /* Modal styles */
         .modal {
             display: none;
             position: fixed;
@@ -43,7 +41,7 @@
             z-index: 9999;
         }
         .modal-content {
-            background-color: #28a745;
+            background-color: #dc3545;
             color: white;
             padding: 20px;
             border-radius: 5px;
@@ -60,7 +58,7 @@
             padding: 10px 20px;
             border: none;
             background-color: #fff;
-            color: #28a745;
+            color: #dc3545;
             font-size: 16px;
             border-radius: 5px;
             cursor: pointer;
@@ -71,25 +69,24 @@
     </style>
 </head>
 <body>
-    <!-- Modal Structure -->
-    <div class="modal" id="successModal">
+    <div class="modal" id="failModal">
         <div class="modal-content">
-            <p><%= message != null ? message : "Staff added successfully!" %></p>
-            <button onclick="redirectToEmployeeStaff()">Go to Staff List</button>
+            <p><%= errorMessage != null ? errorMessage : "Failed to add user. Please try again." %></p>
+            <button onclick="goBack()">Back to Form</button>
         </div>
     </div>
 
     <script>
-        // Show the modal when the page loads
         window.onload = function () {
-            const modal = document.getElementById("successModal");
+            const modal = document.getElementById("failModal");
             modal.style.display = "flex";
         };
 
-        // Redirect function
-        function redirectToStaffList() {
-            window.location.href = "EmployeeListServlet";
+        function goBack() {
+            window.history.back(); // Or change to specific form page if needed
+            // window.location.href = "foAddEmployee1.jsp";
         }
     </script>
 </body>
 </html>
+

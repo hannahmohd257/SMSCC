@@ -10,15 +10,15 @@ package model;
  */
 public class Salary {
     private int salaryID;
-    private int staffID; // Foreign key from Staff
+    private String userID; // Foreign key from Staff
     private double salaryBasic;
     private double salaryDeduction;
     private double salaryOvtRate;
 
     // Constructor
-    public Salary(int salaryID, int staffID, double salaryBasic, double salaryDeduction, double salaryOvtRate) {
+    public Salary(int salaryID, String userID, double salaryBasic, double salaryDeduction, double salaryOvtRate) {
         this.salaryID = salaryID;
-        this.staffID = staffID;
+        this.userID = userID;
         this.salaryBasic = salaryBasic;
         this.salaryDeduction = salaryDeduction;
         this.salaryOvtRate = salaryOvtRate;
@@ -36,12 +36,12 @@ public class Salary {
         this.salaryID = salaryID;
     }
 
-    public int getStaffID() {
-        return staffID;
+    public String getUserID() {
+        return userID;
     }
 
-    public void setStaffID(int staffID) {
-        this.staffID = staffID;
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public double getSalaryBasic() {
@@ -73,7 +73,7 @@ public class Salary {
     public String toString() {
         return "Salary{" +
                 "salaryID=" + salaryID +
-                ", staffID=" + staffID +
+                ", userID=" + userID +
                 ", basicSalary=" + salaryBasic +
                 ", deductions=" + salaryDeduction +
                 ", overtimeRate=" + salaryOvtRate +

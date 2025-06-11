@@ -15,10 +15,10 @@ public class SalaryDAO {
 
     // Method to add salary details for an employee
     public boolean addSalary(Salary salary) {
-        String query = "INSERT INTO Salary (staffID, salaryBasic, salaryDeduction, salaryOvtRate) VALUES (?, ?, ?, ?)";
+        String query = "INSERT INTO Salary (userID, salaryBasic, salaryDeduction, salaryOvtRate) VALUES (?, ?, ?, ?)";
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, salary.getStaffID());
+            statement.setString(1, salary.getUserID());
             statement.setDouble(2, salary.getSalaryBasic());
             statement.setDouble(3, salary.getSalaryDeduction());
             statement.setDouble(4, salary.getSalaryOvtRate());
@@ -32,17 +32,17 @@ public class SalaryDAO {
     }
 
     // Method to retrieve salary information for a specific employee
-    public Salary getSalaryByStaffID(int staffID) {
+    public Salary getSalaryByUserID(String userID) {
         Salary salary = null;
-        String query = "SELECT * FROM Salary WHERE staffID = ?";
+        String query = "SELECT * FROM Salary WHERE userID = ?";
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, staffID);
+            statement.setString(1, userID);
             ResultSet resultSet = statement.executeQuery();
             if (resultSet.next()) {
                 salary = new Salary();
                 salary.setSalaryID(resultSet.getInt("salaryID"));
-                salary.setStaffID(resultSet.getInt("staffID"));
+                salary.setUserID(resultSet.getString("userID"));
                 salary.setSalaryBasic(resultSet.getDouble("salaryBasic"));
                 salary.setSalaryDeduction(resultSet.getDouble("salaryDeduction"));
                 salary.setSalaryOvtRate(resultSet.getDouble("salaryOvtRate"));
@@ -55,13 +55,13 @@ public class SalaryDAO {
 
     // Method to update salary details for an employee
     public boolean updateSalary(Salary salary) {
-        String query = "UPDATE Salary SET basicSalary = ?, deductions = ?, overtimeRate = ? WHERE staffID = ?";
+        String query = "UPDATE Salary SET basicSalary = ?, deductions = ?, overtimeRate = ? WHERE userID = ?";
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
             statement.setDouble(1, salary.getSalaryBasic());
             statement.setDouble(2, salary.getSalaryDeduction());
             statement.setDouble(3, salary.getSalaryOvtRate());
-            statement.setInt(4, salary.getStaffID());
+            statement.setString(4, salary.getUserID());
             
             int rowsAffected = statement.executeUpdate();
             return rowsAffected > 0;

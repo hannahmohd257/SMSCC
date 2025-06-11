@@ -4,214 +4,206 @@
  */
 package dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
+import java.sql.*;
 import model.Staff;
+import model.User;
 import util.DBConnection;
-import static util.DBConnection.getConnection;
 
 public class StaffDAO {
+    private UserDAO userDAO = new UserDAO();
+    
+    // Save new staff (user + staff)
+    public String saveStaff(User user, Staff staff) throws SQLException {
+        Connection connection = null;
+        PreparedStatement userStatement = null;
+        PreparedStatement staffStatement = null;
 
-    public Staff getStaffByID(int staffID) {
-        Staff staff = null;
-        String query = "SELECT * FROM staff WHERE staffID = ?";
+        try {
+            connection = DBConnection.getConnection();
+            connection.setAutoCommit(false); // Begin transaction
+
+            // ✅ Use same connection to generate ID
+            String userID = userDAO.generateNewUserID(user.getRole(), connection);
+            user.setUserID(userID);
+
+            // Insert user
+            String userQuery = "INSERT INTO user (userID, role, username, fullname, password, email) VALUES (?, ?, ?, ?, ?, ?)";
+            userStatement = connection.prepareStatement(userQuery);
+            userStatement.setString(1, userID);
+            userStatement.setString(2, user.getRole());
+            userStatement.setString(3, user.getUsername());
+            userStatement.setString(4, user.getFullname());
+            userStatement.setString(5, user.getPassword());
+            userStatement.setString(6, user.getEmail());
+
+            int userRows = userStatement.executeUpdate();
+            if (userRows == 0) {
+                throw new SQLException("Inserting user failed. No rows affected.");
+            }
+
+            // Insert staff
+            String staffQuery = "INSERT INTO staff (userID, staffJoinedDate, staffGender, staffPosition, staffAddress, staffPhoneno, staffMaritalStatus, staffEmpType, staffBank, staffAccNo, staffDOB, basicSalary) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            staffStatement = connection.prepareStatement(staffQuery);
+            staffStatement.setString(1, userID);
+            staffStatement.setDate(2, new java.sql.Date(staff.getStaffJoinedDate().getTime()));
+            staffStatement.setString(3, staff.getStaffGender());
+            staffStatement.setString(4, staff.getStaffPosition());
+            staffStatement.setString(5, staff.getStaffAddress());
+            staffStatement.setString(6, staff.getStaffPhoneno());
+            staffStatement.setString(7, staff.getStaffMaritalStatus());
+            staffStatement.setString(8, staff.getStaffEmpType());
+            staffStatement.setString(9, staff.getStaffBank());
+            staffStatement.setString(10, staff.getStaffAccNo());
+            staffStatement.setDate(11, new java.sql.Date(staff.getStaffDOB().getTime()));
+            staffStatement.setDouble(12, staff.getBasicSalary());
+
+            int staffRows = staffStatement.executeUpdate();
+            if (staffRows == 0) {
+                throw new SQLException("Inserting staff failed. No rows affected.");
+            }
+
+            connection.commit(); // ✅ COMMIT both inserts
+            return userID;
+
+        } catch (SQLException e) {
+            if (connection != null) {
+                try {
+                    connection.rollback();
+                } catch (SQLException rollbackEx) {
+                    System.err.println("Rollback failed: " + rollbackEx.getMessage());
+                }
+            }
+            throw e;
+        } finally {
+            // Clean-up
+            if (staffStatement != null) try { staffStatement.close(); } catch (SQLException ex) { System.err.println("Failed to close staffStatement: " + ex.getMessage()); }
+            if (userStatement != null) try { userStatement.close(); } catch (SQLException ex) { System.err.println("Failed to close userStatement: " + ex.getMessage()); }
+            if (connection != null) {
+                try {
+                    connection.setAutoCommit(true); // Reset autocommit
+                    connection.close();
+                } catch (SQLException ex) {
+                    System.err.println("Failed to close connection: " + ex.getMessage());
+                }
+            }
+        }
+    }
+
+
+    // Update existing staff
+    public void updateStaff(Staff staff) throws SQLException {
+        String sql = "UPDATE staff SET " +
+                     "staffPosition = ?, staffAddress = ?, staffPhoneno = ?, staffMaritalStatus = ?, " +
+                     "staffEmpType = ?, staffBank = ?, staffAccNo = ?, staffGender = ?, " +
+                     "staffDOB = ?, staffJoinedDate = ?, basicSalary = ? " +
+                     "WHERE userID = ?";
+
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, staff.getStaffPosition());
+            stmt.setString(2, staff.getStaffAddress());
+            stmt.setString(3, staff.getStaffPhoneno());
+            stmt.setString(4, staff.getStaffMaritalStatus());
+            stmt.setString(5, staff.getStaffEmpType());
+            stmt.setString(6, staff.getStaffBank());
+            stmt.setString(7, staff.getStaffAccNo());
+            stmt.setString(8, staff.getStaffGender());
+            stmt.setDate(9, new java.sql.Date(staff.getStaffDOB().getTime()));
+            stmt.setDate(10, new java.sql.Date(staff.getStaffJoinedDate().getTime()));
+            stmt.setDouble(11, staff.getBasicSalary());
+            stmt.setString(12, staff.getUserID());
+
+            stmt.executeUpdate();
+        }
+    }
+
+
+    // Delete staff by userID
+    public void deleteStaff(String userID) throws SQLException {
+        String sql = "DELETE FROM staff WHERE userID = ?";
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, userID);
+            stmt.executeUpdate();
+        }
+    }
+
+
+
+    // Get staff by userID
+    public Staff getUserById(String userID) throws SQLException {
+        String query = "SELECT * FROM user JOIN staff ON user.userID = staff.userID WHERE user.userID = ?";
+
         try (Connection connection = DBConnection.getConnection();
              PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, staffID);
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                staff = new Staff();
-                staff.setStaffID(resultSet.getInt("staffID"));
-                staff.setStaffPassword(resultSet.getString("staffPassword"));
-                staff.setStaffRole(resultSet.getString("staffRole"));
-                
-                // Handle nullable fields
-                staff.setStaffName(resultSet.getString("staffName"));
-                staff.setStaffFullname(resultSet.getString("staffFullname"));
-                staff.setStaffEmail(resultSet.getString("staffEmail"));
-                staff.setStaffPosition(resultSet.getString("staffPosition"));
-                staff.setStaffPhoneno(resultSet.getString("staffPhoneno"));
-                staff.setStaffAddress(resultSet.getString("staffAddress"));
 
-                // Handle nullable Date fields safely
-                staff.setStaffJoinedDate(resultSet.getDate("staffJoinedDate"));
-                staff.setStaffGender(resultSet.getString("staffGender"));
-                staff.setStaffDOB(resultSet.getDate("staffDOB"));
-                staff.setStaffMaritalStatus(resultSet.getString("staffMaritalStatus"));
-                staff.setStaffEmpType(resultSet.getString("staffEmpType"));
-                staff.setStaffBank(resultSet.getString("staffBank"));
-                staff.setStaffAccNo(resultSet.getString("staffAccNo"));
+            statement.setString(1, userID);
+
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return extractStaffFromResultSet(rs);
+                } else {
+                    return null;
+                }
             }
+        }
+    }
+    
+    public Staff getStaffByUserID(String userID) {
+        Staff staff = null;
+        try (Connection conn = DBConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement("SELECT * FROM staff WHERE userID = ?")) {
+            stmt.setString(1, userID);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                staff = new Staff();
+                staff.setStaffPosition(rs.getString("staffPosition"));
+                staff.setStaffGender(rs.getString("staffGender"));
+                staff.setStaffPhoneno(rs.getString("staffPhoneno"));
+                staff.setStaffDOB(rs.getDate("staffDOB"));
+                staff.setStaffAddress(rs.getString("staffAddress"));
+                staff.setStaffJoinedDate(rs.getDate("staffJoinedDate"));
+                staff.setStaffMaritalStatus(rs.getString("staffMaritalStatus"));
+                staff.setStaffEmpType(rs.getString("staffEmpType"));
+                staff.setStaffBank(rs.getString("staffBank"));
+                staff.setStaffAccNo(rs.getString("staffAccNo"));
+                staff.setBasicSalary(rs.getDouble("basicSalary"));
+                // Add any other fields here
+            }
+
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return staff;
     }
 
-    public boolean validateStaffCredentials(int staffID, String staffPassword, String staffRole) {
-        boolean isValid = false;
-        String query = "SELECT * FROM staff WHERE staffID = ? AND staffPassword = ? AND staffRole = ?";
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query)) {
-            statement.setInt(1, staffID);
-            statement.setString(2, staffPassword);
-            statement.setString(3, staffRole); // Convert Role to its Integer value
-            ResultSet resultSet = statement.executeQuery();
-            if (resultSet.next()) {
-                isValid = true;
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return isValid;
-    }
+    // Helper method to extract Staff from ResultSet
+    private Staff extractStaffFromResultSet(ResultSet rs) throws SQLException {
+        Staff staff = new Staff();
+        User user = new User();
 
-    public List<Staff> getAllEmployees() {
-        List<Staff> employees = new ArrayList<>();
-        String query = "SELECT staffID, staffFullname, staffEmail, staffPosition FROM staff";
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query);
-             ResultSet resultSet = statement.executeQuery()) {
-            while (resultSet.next()) {
-                Staff staff = new Staff();
-                staff.setStaffID(resultSet.getInt("staffID"));
-                staff.setStaffFullname(resultSet.getString("staffFullname"));
-                staff.setStaffEmail(resultSet.getString("staffEmail"));
-                staff.setStaffPosition(resultSet.getString("staffPosition"));
-                employees.add(staff);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return employees;
-    }
-    
-    public int saveStaff(Staff staff) throws SQLException {
-        String query = "INSERT INTO staff (staffFullname, staffName, staffJoinedDate, staffGender, staffPosition, staffAddress, staffPhoneno, staffEmail, staffMaritalStatus, staffEmpType, staffBank, staffAccNo, staffDOB, staffPassword, staffRole) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        user.setUserID(rs.getString("userID"));
+        user.setRole(rs.getString("role"));
+        user.setUsername(rs.getString("username"));
+        user.setFullname(rs.getString("fullname"));
+        user.setPassword(rs.getString("password"));
+        user.setEmail(rs.getString("email"));
 
-        try (Connection connection = DBConnection.getConnection();
-             PreparedStatement statement = connection.prepareStatement(query, Statement.RETURN_GENERATED_KEYS)) {
+        staff.setStaffJoinedDate(rs.getDate("staffJoinedDate"));
+        staff.setStaffGender(rs.getString("staffGender"));
+        staff.setStaffPosition(rs.getString("staffPosition"));
+        staff.setStaffAddress(rs.getString("staffAddress"));
+        staff.setStaffPhoneno(rs.getString("staffPhoneno"));
+        staff.setStaffMaritalStatus(rs.getString("staffMaritalStatus"));
+        staff.setStaffEmpType(rs.getString("staffEmpType"));
+        staff.setStaffBank(rs.getString("staffBank"));
+        staff.setStaffAccNo(rs.getString("staffAccNo"));
+        staff.setStaffDOB(rs.getDate("staffDOB"));
+        staff.setBasicSalary(rs.getDouble("basicSalary"));
+        
 
-            // Set the parameters from the staff object
-            statement.setString(1, staff.getStaffFullname());
-            statement.setString(2, staff.getStaffName());
-            statement.setDate(3, staff.getStaffJoinedDate() != null ? new java.sql.Date(staff.getStaffJoinedDate().getTime()) : null);
-            statement.setString(4, staff.getStaffGender());
-            statement.setString(5, staff.getStaffPosition());
-            statement.setString(6, staff.getStaffAddress());
-            statement.setString(7, staff.getStaffPhoneno());
-            statement.setString(8, staff.getStaffEmail());
-            statement.setString(9, staff.getStaffMaritalStatus());
-            statement.setString(10, staff.getStaffEmpType());
-            statement.setString(11, staff.getStaffBank());
-            statement.setString(12, staff.getStaffAccNo());
-            statement.setDate(13, staff.getStaffDOB() != null ? new java.sql.Date(staff.getStaffDOB().getTime()) : null);
-            statement.setString(14, staff.getStaffPassword());
-            statement.setString(15, staff.getStaffRole());
-
-            // Execute the query
-            int affectedRows = statement.executeUpdate();
-            if (affectedRows == 0) {
-                throw new SQLException("Failed to insert staff, no rows affected.");
-            }
-
-            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
-                if (generatedKeys.next()) {
-                    return generatedKeys.getInt(1); // Return the generated staffID
-                } else {
-                    throw new SQLException("Failed to insert staff, no ID obtained.");
-                }
-            }
-        }
-    }
-    
-    public boolean updateStaff(Staff staff) {
-        String query = "UPDATE staff SET staffFullname = ?, staffName = ?, staffJoinedDate = ?, staffGender = ?, " +
-                       "staffPosition = ?, staffAddress = ?, staffPhoneno = ?, staffEmail = ?, staffMaritalStatus = ?, " +
-                       "staffEmpType = ?, staffBank = ?, staffAccNo = ?, staffDOB = ?, staffPassword = ?, staffRole = ? " +
-                       "WHERE staffID = ?";
-
-        try (Connection conn = getConnection();
-             PreparedStatement stmt = conn.prepareStatement(query)) {
-
-            // Prepare statement with correct data types
-            stmt.setString(1, staff.getStaffFullname());
-            stmt.setString(2, staff.getStaffName());
-
-            // Assuming staffJoinedDate is a java.util.Date object
-            stmt.setDate(3, new java.sql.Date(staff.getStaffJoinedDate().getTime()));
-
-            stmt.setString(4, staff.getStaffGender());
-            stmt.setString(5, staff.getStaffPosition());
-            stmt.setString(6, staff.getStaffAddress());
-            stmt.setString(7, staff.getStaffPhoneno());
-            stmt.setString(8, staff.getStaffEmail());
-            stmt.setString(9, staff.getStaffMaritalStatus());
-            stmt.setString(10, staff.getStaffEmpType());
-            stmt.setString(11, staff.getStaffBank());
-            stmt.setString(12, staff.getStaffAccNo());
-
-            // Assuming staffDOB is a java.util.Date object
-            stmt.setDate(13, new java.sql.Date(staff.getStaffDOB().getTime()));
-
-            stmt.setString(14, staff.getStaffPassword());
-            stmt.setString(15, staff.getStaffRole());
-            stmt.setInt(16, staff.getStaffID());
-
-            // Execute update and check if any rows were affected
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-
-    
-    public boolean deleteStaff(int staffID) {
-        Connection connection = null;
-        PreparedStatement salaryStmt = null;
-        PreparedStatement staffStmt = null;
-        boolean isDeleted = false;
-
-        try {
-            connection = DBConnection.getConnection();
-            connection.setAutoCommit(false);
-
-            String deleteSalarySQL = "DELETE FROM salary WHERE staffID = ?";
-            salaryStmt = connection.prepareStatement(deleteSalarySQL);
-            salaryStmt.setInt(1, staffID);
-            salaryStmt.executeUpdate();
-
-            String deleteStaffSQL = "DELETE FROM staff WHERE staffID = ?";
-            staffStmt = connection.prepareStatement(deleteStaffSQL);
-            staffStmt.setInt(1, staffID);
-            int rowsAffected = staffStmt.executeUpdate();
-
-            if (rowsAffected > 0) {
-                isDeleted = true;
-            }
-
-            connection.commit();
-        } catch (SQLException e) {
-            e.printStackTrace();
-            if (connection != null) {
-                try {
-                    connection.rollback();
-                } catch (SQLException rollbackEx) {
-                    rollbackEx.printStackTrace();
-                }
-            }
-        } finally {
-            DBConnection.close(salaryStmt, connection);
-            DBConnection.close(staffStmt);
-        }
-
-        return isDeleted;
+        return staff;
     }
 }

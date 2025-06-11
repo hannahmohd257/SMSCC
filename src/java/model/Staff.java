@@ -8,12 +8,7 @@ package model;
 import java.util.Date;
 
 public class Staff {
-    private int staffID;
-    private String staffPassword;
-    private String staffRole;
-    private String staffName;
-    private String staffFullname;
-    private String staffEmail;
+    private String userID;
     private String staffPosition;
     private String staffPhoneno;
     private String staffAddress;
@@ -24,18 +19,14 @@ public class Staff {
     private String staffEmpType;
     private String staffBank;
     private String staffAccNo;
+    private double basicSalary;
+    private User user; // userID, username, fullname, email, role are inside here
 
     // Constructor
-    public Staff(int staffID, String staffPassword, String staffRole, String staffName, String staffFullname, 
-             String staffEmail, Date staffJoinedDate, String staffPosition, String staffPhoneno, 
+    public Staff(String userID,Date staffJoinedDate, String staffPosition, String staffPhoneno, 
              Date staffDOB, String staffAddress, String staffGender, String staffMaritalStatus, 
-             String staffEmpType, String staffBank, String staffAccNo) {
-    this.staffID = staffID;
-    this.staffPassword = staffPassword;
-    this.staffRole = staffRole;
-    this.staffName = staffName;
-    this.staffFullname = staffFullname;
-    this.staffEmail = staffEmail;
+             String staffEmpType, String staffBank, String staffAccNo, double basicSalary) {
+    this.userID = userID;
     this.staffJoinedDate = staffJoinedDate;
     this.staffPosition = staffPosition;
     this.staffPhoneno = staffPhoneno;
@@ -46,58 +37,19 @@ public class Staff {
     this.staffEmpType = staffEmpType;
     this.staffBank = staffBank;
     this.staffAccNo = staffAccNo;
+    this.basicSalary = basicSalary;
     }
 
     // Default constructor
     public Staff() {}
 
     // Getters and Setters for all fields, including the new ones
-    public int getStaffID() {
-        return staffID;
+    public String getUserID() {
+        return userID;
     }
 
-    public void setStaffID(int staffID) {
-        this.staffID = staffID;
-    }
-
-    public String getStaffPassword() {
-        return staffPassword;
-    }
-
-    public void setStaffPassword(String staffPassword) {
-        this.staffPassword = staffPassword;
-    }
-
-    public String getStaffRole() {
-        return staffRole;
-    }
-
-    public void setStaffRole(String staffRole) {
-        this.staffRole = staffRole;
-    }
-
-    public String getStaffName() {
-        return staffName;
-    }
-
-    public void setStaffName(String staffName) {
-        this.staffName = staffName;
-    }
-
-    public String getStaffFullname() {
-        return staffFullname;
-    }
-
-    public void setStaffFullname(String staffFullname) {
-        this.staffFullname = staffFullname;
-    }
-
-    public String getStaffEmail() {
-        return staffEmail;
-    }
-
-    public void setStaffEmail(String staffEmail) {
-        this.staffEmail = staffEmail;
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
 
     public String getStaffPosition() {
@@ -180,17 +132,29 @@ public class Staff {
     public void setStaffAccNo(String staffAccNo) {
         this.staffAccNo = staffAccNo;
     }
+    
+    public double getBasicSalary() {
+        return basicSalary;
+    }
 
+    public void setBasicSalary(double basicSalary) {
+        this.basicSalary = basicSalary;
+    }
+
+    // Getter and setter for `user`
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+    
     // toString method (updated with new fields)
     @Override
     public String toString() {
         return "Staff{" +
-                "staffID=" + staffID +
-                ", staffPassword='" + staffPassword + '\'' +
-                ", staffRole='" + staffRole +
-                ", staffName='" + staffName + '\'' +
-                ", staffFullname='" + staffFullname + '\'' +
-                ", staffEmail='" + staffEmail + '\'' +
+                "userID=" + userID +
                 ", staffPosition='" + staffPosition + '\'' +
                 ", staffPhoneno='" + staffPhoneno + '\'' +
                 ", staffAddress='" + staffAddress + '\'' +
@@ -201,6 +165,7 @@ public class Staff {
                 ", staffEmpType='" + staffEmpType + '\'' +
                 ", staffBank='" + staffBank + '\'' +
                 ", staffAccNo='" + staffAccNo + '\'' +
+                ", basicSalary='" + basicSalary + '\'' +
                 '}';
     }
 }

@@ -1,19 +1,19 @@
 <%-- 
-    Document   : foAddEmployee
-    Created on : 17 Jan 2025, 3:07:49 am
+    Document   : foAddEmployee3
+    Created on : 17 Jan 2025, 3:10:41 am
     Author     : user
 --%>
 
+<%@page import="model.Role"%>
 <%@page import="java.sql.Date"%>
-<%@page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-    // Retrieve session attributes
-    String staffFullname = (String) session.getAttribute("staffFullname");
+    String fullname = request.getParameter("fullname");
 %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CC | Add New Staff</title>
+    <title>CC | Add New Staff - Step 2</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -220,69 +220,91 @@
         <div class="sidebar">
             <div class="profile">
                 <div class="profile-pic"></div>
-                <p class="profile-name"><%= staffFullname != null ? staffFullname : "Finance Officer" %></p>
+                <p class="profile-name"><%= fullname != null ? fullname : "Human Resource" %></p>
             </div>
             <ul class="nav-links">
-                <li><a href="foDashboard.jsp">Home</a></li>
-                <li><a href="StaffListServlet" class="active">Staff</a></li>
-                <li><a href="foApprovals.jsp">Approvals</a></li>
-                <li><a href="foReports.jsp">Reports</a></li>
+                <li><a href="hrDashboard.jsp">Home</a></li>
+
+                <li class="dropdown">
+                    <a href="#">Users ▾</a> <!-- Main Dropdown Link -->
+                    <ul class="dropdown-content">
+                        <li><a href="UserListServlet?role=Staff">Staff</a></li>
+                        <li><a href="UserListServlet?role=Finance Officer">Finance Officer</a></li>
+                        <li><a href="UserListServlet?role=Manager">Manager</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="hrApprovals.jsp">Approvals</a></li>
+                <li><a href="hrReports.jsp">Reports</a></li>
             </ul>
             <a href="logout.jsp" class="logout">Logout</a>
         </div>
 
         <!-- Main Content -->
         <div class="container-main">
-            <h2>Step 1: Basics</h2>
+            <h2>Step 2: Personal Info</h2>
+
             <!-- Navigation Steps -->
             <div class="steps">
                 <div class="step">
-                    <div class="circle active">1</div>
+                    <div class="circle">1</div>
                     <div class="step-title">Basics</div>
                 </div>
-                <div class="step">
+<!--                <div class="step">
                     <div class="circle">2</div>
                     <div class="step-title">Salary Details</div>
-                </div>
+                </div>-->
                 <div class="step">
-                    <div class="circle">3</div>
+                    <div class="circle active">2</div>
                     <div class="step-title">Personal Info</div>
                 </div>
                 <div class="step">
-                    <div class="circle">4</div>
+                    <div class="circle">3</div>
                     <div class="step-title">Payment Info</div>
                 </div>
             </div>
 
-            <!-- Form Section -->
-            <form action="AddEmployeeServlet" method="post">
-                <input type="hidden" name="step" value="1">
-                
-                <label for="staffFullname">Staff Full Name</label>
-                <input type="text" id="staffFullname" name="staffFullname" 
-                    value="${sessionScope.staffFullname}" required>
+            <!-- Form -->
+            <form action="AddStaffServlet" method="post">
+                <input type="hidden" name="step" value="2">
 
-                <label for="staffName">Staff Username</label>
-                <input type="text" id="staffName" name="staffName" 
-                    value="${sessionScope.staffName}" required>
+                <label>Password:</label>
+                <input type="password" id="password" name="password" 
+                    value="${sessionScope.password}" required><br>
 
-                <label for="staffJoinedDate">Joined Date</label>
-                <input type="date" id="staffJoinedDate" name="staffJoinedDate" 
-                    value="${sessionScope.staffJoinedDate}" required>
+                <label>Date of Birth:</label>
+                <input type="date" id="staffDOB" name="staffDOB" 
+                    value="${sessionScope.staffDOB}" required><br>
 
-                <label for="staffGender">Gender</label>
-                <select id="staffGender" name="staffGender" required>
-                    <option value="" disabled ${empty sessionScope.staffGender ? 'selected' : ''}>Select Gender</option>
-                    <option value="Male" ${sessionScope.staffGender == 'Male' ? 'selected' : ''}>Male</option>
-                    <option value="Female" ${sessionScope.staffGender == 'Female' ? 'selected' : ''}>Female</option>
-                </select>
+                <label>Address:</label>
+                <textarea name="staffAddress" id="staffAddress" style="width: 300px; height: 50px;" 
+                    required>${sessionScope.staffAddress}</textarea><br>
 
-                <label for="staffPosition">Position</label>
-                <input type="text" id="staffPosition" name="staffPosition" 
-                    value="${sessionScope.staffPosition}" required>
+                <label>Contact Number:</label>
+                <input type="text" id="staffPhoneno" name="staffPhoneno" 
+                    value="${sessionScope.staffPhoneno}" required><br>
+
+                <label>Email:</label>
+                <input type="email" id="email" name="email" 
+                    value="${sessionScope.email}" required><br>
+
+                <label for="staffMaritalStatus">Marital Status:</label>
+                <select id="staffMaritalStatus" name="staffMaritalStatus" required>
+                    <option value="">Select marital status</option>
+                    <option value="Single" ${sessionScope.staffMaritalStatus == 'Single' ? 'selected' : ''}>Single</option>
+                    <option value="Married" ${sessionScope.staffMaritalStatus == 'Married' ? 'selected' : ''}>Married</option>
+                </select><br>
+
+                <label for="staffEmpType">Employment Type:</label>
+                <select id="staffEmpType" name="staffEmpType" required>
+                    <option value="">Select employment type</option>
+                    <option value="Full-Time" ${sessionScope.staffEmpType == 'Full-Time' ? 'selected' : ''}>Full-Time</option>
+                    <option value="Part-Time" ${sessionScope.staffEmpType == 'Part-Time' ? 'selected' : ''}>Part-Time</option>
+                    <option value="Contract" ${sessionScope.staffEmpType == 'Contract' ? 'selected' : ''}>Contract</option>
+                </select><br>
 
                 <div class="button-container">
-                    <button type="reset" class="cancel-btn">Cancel</button>
+                    <button type="button" onclick="window.history.back()">Back</button>
                     <button type="submit">Next</button>
                 </div>
             </form>

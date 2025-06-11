@@ -1,9 +1,11 @@
 <%-- 
-    Document   : foDashboard
-    Created on : 18 May 2025, 6:13:59 am
+    Document   : createPayRun
+    Created on : 18 May 2025, 4:47:49?am
     Author     : user
 --%>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%@ page session="true" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
     // Retrieve FO session attributes
     String userID = (String) session.getAttribute("userID");
@@ -22,7 +24,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CC | Finance Officer Dashboard</title>
+    <title>CC | Create Pay Run</title>
     <style>
         body {
             margin: 0;
@@ -261,51 +263,27 @@
             
             <a href="logout.jsp" class="logout">Logout</a>
         </aside>
+            
+        <h2>Create New Pay Run</h2>
+        <form action="CreatePayrunServlet" method="post">
+            <label for="month">Month:</label>
+            <select name="month">
+                <c:forEach begin="1" end="12" var="m">
+                    <option value="${m}">${m}</option>
+                </c:forEach>
+            </select>
 
-        <!-- Main Content -->
-        <main class="content">
-            <header class="header">
-                <h1>Welcome, <span class="name"><%= username %></span>!</h1>
-            </header>
+            <label for="year">Year:</label>
+            <select name="year">
+                <c:forEach begin="2023" end="2026" var="y">
+                    <option value="${y}">${y}</option>
+                </c:forEach>
+            </select>
 
-            <!-- Current Pay Run Summary -->
-            <section class="section">
-                <div>
-                    <h2>Current Pay Run Status</h2>
-                    <p>Status: <strong>Pending Approval</strong></p>
-                    <p>Processed Staff: <strong>12</strong></p>
-                    <p>Total Salary: <strong>RM 50,000.00</strong></p>
-                </div>
-                <button onclick="location.href='foCreatePayrun.jsp'">Create Pay Run</button>
-            </section>
-
-            <!-- Financial Overview -->
-            <section class="section">
-                <h3>Financial Overview</h3>
-                <div class="chart-container">
-                    <div>
-                        <div class="chart"></div>
-                        <div class="chart-label">Budget: RM 120,000</div>
-                    </div>
-                    <div>
-                        <div class="chart"></div>
-                        <div class="chart-label">Expenses: RM 80,000</div>
-                    </div>
-                    <div>
-                        <div class="chart"></div>
-                        <div class="chart-label">Remaining: RM 40,000</div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Reports Section -->
-            <section class="section">
-                <h2>Reports</h2>
-                <p>Latest financial reports available for review.</p>
-                <button onclick="location.href='FinanceReportsServlet'">View Reports</button>
-            </section>
-        </main>
+            <button type="submit">Create Pay Run</button>
+        </form>
     </div>
 </body>
 </html>
+
 

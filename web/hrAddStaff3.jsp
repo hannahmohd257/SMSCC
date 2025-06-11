@@ -8,12 +8,12 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.*" %>
 <%
-    String staffFullname = request.getParameter("staffFullname");
+    String fullname = request.getParameter("fullname");
 %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CC | Add New Staff - Step 4</title>
+    <title>CC | Add New Staff - Step 3</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -220,20 +220,29 @@
         <div class="sidebar">
             <div class="profile">
                 <div class="profile-pic"></div>
-                <p class="profile-name"><%= staffFullname != null ? staffFullname : "Finance Officer" %></p>
+                <p class="profile-name"><%= fullname != null ? fullname : "Human Resource" %></p>
             </div>
             <ul class="nav-links">
-                <li><a href="foDashboard.jsp">Home</a></li>
-                <li><a href="StaffListServlet" class="active">Staffs</a></li>
-                <li><a href="foApprovals.jsp">Approvals</a></li>
-                <li><a href="foReports.jsp">Reports</a></li>
+                <li><a href="hrDashboard.jsp">Home</a></li>
+
+                <li class="dropdown">
+                    <a href="#">Users ▾</a> <!-- Main Dropdown Link -->
+                    <ul class="dropdown-content">
+                        <li><a href="UserListServlet?role=Staff">Staff</a></li>
+                        <li><a href="UserListServlet?role=Finance Officer">Finance Officer</a></li>
+                        <li><a href="UserListServlet?role=Manager">Manager</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="hrApprovals.jsp">Approvals</a></li>
+                <li><a href="hrReports.jsp">Reports</a></li>
             </ul>
             <a href="logout.jsp" class="logout">Logout</a>
         </div>
 
         <!-- Main Content -->
         <div class="container-main">
-            <h2>Step 4: Payment Info</h2>
+            <h2>Step 3: Payment Info</h2>
 
             <!-- Navigation Steps -->
             <div class="steps">
@@ -241,23 +250,23 @@
                     <div class="circle">1</div>
                     <div class="step-title">Basics</div>
                 </div>
-                <div class="step">
+<!--                <div class="step">
                     <div class="circle">2</div>
                     <div class="step-title">Salary Details</div>
-                </div>
+                </div>-->
                 <div class="step">
-                    <div class="circle">3</div>
+                    <div class="circle">2</div>
                     <div class="step-title">Personal Info</div>
                 </div>
                 <div class="step">
-                    <div class="circle active">4</div>
+                    <div class="circle active">3</div>
                     <div class="step-title">Payment Info</div>
                 </div>
             </div>
 
             <!-- Form -->
-            <form action="AddEmployeeServlet" method="post">
-                <input type="hidden" name="step" value="4">
+            <form action="AddStaffServlet" method="post">
+                <input type="hidden" name="step" value="3">
 
                 <% if(request.getAttribute("error") != null) { %>
                     <div class="error-message">
@@ -266,8 +275,35 @@
                 <% } %>
 
                 <label for="staffBank">Bank Name:</label>
-                <input type="text" id="staffBank" name="staffBank" 
-                    value="${sessionScope.staffBank}" required><br>
+                <select id="staffBank" name="staffBank" required onchange="toggleOtherBank(this.value)">
+                    <option value="" disabled selected>Select your bank</option>
+                    <option value="Maybank" ${sessionScope.staffBank == 'Maybank' ? 'selected' : ''}>Maybank</option>
+                    <option value="CIMB Bank" ${sessionScope.staffBank == 'CIMB Bank' ? 'selected' : ''}>CIMB Bank</option>
+                    <option value="Public Bank" ${sessionScope.staffBank == 'Public Bank' ? 'selected' : ''}>Public Bank</option>
+                    <option value="RHB Bank" ${sessionScope.staffBank == 'RHB Bank' ? 'selected' : ''}>RHB Bank</option>
+                    <option value="Hong Leong Bank" ${sessionScope.staffBank == 'Hong Leong Bank' ? 'selected' : ''}>Hong Leong Bank</option>
+                    <option value="AmBank" ${sessionScope.staffBank == 'AmBank' ? 'selected' : ''}>AmBank</option>
+                    <option value="Bank Islam" ${sessionScope.staffBank == 'Bank Islam' ? 'selected' : ''}>Bank Islam</option>
+                    <option value="Bank Rakyat" ${sessionScope.staffBank == 'Bank Rakyat' ? 'selected' : ''}>Bank Rakyat</option>
+                    <option value="OCBC Bank" ${sessionScope.staffBank == 'OCBC Bank' ? 'selected' : ''}>OCBC Bank</option>
+                    <option value="HSBC Bank" ${sessionScope.staffBank == 'HSBC Bank' ? 'selected' : ''}>HSBC Bank</option>
+                    <option value="Standard Chartered" ${sessionScope.staffBank == 'Standard Chartered' ? 'selected' : ''}>Standard Chartered</option>
+                    <option value="Other" ${sessionScope.staffBank == 'Other' ? 'selected' : ''}>Other</option>
+                </select>
+                
+                <input type="text" name="otherBankName" id="otherBankName" style="display:none;" placeholder="Enter bank name">
+
+                <script>
+                function toggleOtherBank(val) {
+                    const otherInput = document.getElementById("otherBankName");
+                    if (val === "Other") {
+                        otherInput.style.display = "block";
+                    } else {
+                        otherInput.style.display = "none";
+                        otherInput.value = "";
+                    }
+                }
+                </script>
 
                 <label for="staffAccNo">Bank Account:</label>
                 <input type="text" id="staffAccNo" name="staffAccNo" 
@@ -277,6 +313,13 @@
                     <button type="button" onclick="window.history.back()">Back</button>
                     <button type="submit">Submit</button>
                 </div>
+                
+                <script>
+                    window.onload = function() {
+                        const selectedBank = document.getElementById("staffBank").value;
+                        toggleOtherBank(selectedBank);
+                    };
+                </script>
             </form>
         </div>
     </div>

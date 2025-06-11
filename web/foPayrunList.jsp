@@ -1,9 +1,11 @@
 <%-- 
-    Document   : foDashboard
-    Created on : 18 May 2025, 6:13:59 am
+    Document   : foPayrunList
+    Created on : 18 May 2025, 5:21:27 am
     Author     : user
 --%>
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+
+<%@ page import="java.util.*, model.Payrun" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%
     // Retrieve FO session attributes
     String userID = (String) session.getAttribute("userID");
@@ -22,7 +24,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CC | Finance Officer Dashboard</title>
+    <title>CC | Pay Run List</title>
     <style>
         body {
             margin: 0;
@@ -244,68 +246,35 @@
     </style>
 </head>
 <body>
-    <div class="container">
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="profile">
-                <div class="profile-pic"></div>
-                <p class="profile-name"><%= fullname %></p>
-            </div>
-            <ul class="nav-links">
-                <li><a href="foDashboard.jsp" class="active">Home</a></li>
-                
-                <li><a href="PayrunListServlet">Pay Runs</a></li>
-                <li><a href="FinanceReportsServlet">Reports</a></li>
-                <li><a href="BudgetServlet">Budget Management</a></li>
-            </ul>
-            
-            <a href="logout.jsp" class="logout">Logout</a>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="content">
-            <header class="header">
-                <h1>Welcome, <span class="name"><%= username %></span>!</h1>
-            </header>
-
-            <!-- Current Pay Run Summary -->
-            <section class="section">
-                <div>
-                    <h2>Current Pay Run Status</h2>
-                    <p>Status: <strong>Pending Approval</strong></p>
-                    <p>Processed Staff: <strong>12</strong></p>
-                    <p>Total Salary: <strong>RM 50,000.00</strong></p>
-                </div>
-                <button onclick="location.href='foCreatePayrun.jsp'">Create Pay Run</button>
-            </section>
-
-            <!-- Financial Overview -->
-            <section class="section">
-                <h3>Financial Overview</h3>
-                <div class="chart-container">
-                    <div>
-                        <div class="chart"></div>
-                        <div class="chart-label">Budget: RM 120,000</div>
-                    </div>
-                    <div>
-                        <div class="chart"></div>
-                        <div class="chart-label">Expenses: RM 80,000</div>
-                    </div>
-                    <div>
-                        <div class="chart"></div>
-                        <div class="chart-label">Remaining: RM 40,000</div>
-                    </div>
-                </div>
-            </section>
-
-            <!-- Reports Section -->
-            <section class="section">
-                <h2>Reports</h2>
-                <p>Latest financial reports available for review.</p>
-                <button onclick="location.href='FinanceReportsServlet'">View Reports</button>
-            </section>
-        </main>
-    </div>
+    <h2>Pay Run List</h2>
+    <table border="1" cellpadding="5">
+        <tr>
+            <th>ID</th>
+            <th>Month</th>
+            <th>Year</th>
+            <th>Created Date</th>
+            <th>Created By</th>
+            <th>Status</th>
+            <th>Total Salary (RM)</th>
+            <th>Action</th>
+        </tr>
+        <%
+            List<Payrun> payrunList = (List<Payrun>) request.getAttribute("payrunList");
+            for (Payrun pr : payrunList) {
+        %>
+        <tr>
+            <td><%= pr.getPayrunID() %></td>
+            <td><%= pr.getMonth() %></td>
+            <td><%= pr.getYear() %></td>
+            <td><%= pr.getCreatedDate() %></td>
+            <td><%= pr.getCreatedBy() %></td>
+            <td><%= pr.getStatus() %></td>
+            <td><%= String.format("%.2f", pr.getTotalSalary()) %></td>
+            <td>
+                <a href="PayrunServlet?payrunID=<%= pr.getPayrunID() %>">View</a>
+            </td>
+        </tr>
+        <% } %>
+    </table>
 </body>
 </html>
-

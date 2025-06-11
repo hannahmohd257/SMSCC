@@ -4,83 +4,54 @@
  */
 package servlet;
 
+
 import java.io.IOException;
 import java.sql.*;
-import java.time.DayOfWeek;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import javax.servlet.ServletException;
+import java.time.*;
+import javax.servlet.*;
 import javax.servlet.http.*;
-import model.Staff;
 import util.DBConnection;
 
 public class ClockServlet extends HttpServlet {
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String action = request.getParameter("action");
-        HttpSession session = request.getSession();
-        
-        // Check if staffID is available
-        Integer staffID = (Integer) session.getAttribute("staffID");
-        if (staffID == null) {
-            response.sendRedirect("login.jsp"); // or any login page
-            return;
-        }
+        String userID = (String) request.getSession().getAttribute("userID");
+        LocalDate today = LocalDate.now();
+        Timestamp now = Timestamp.valueOf(LocalDateTime.now());
 
         try (Connection conn = DBConnection.getConnection()) {
             PreparedStatement ps;
-            ResultSet rs;
-
-            // Get current timestamp info
-            LocalDateTime now = LocalDateTime.now();
-            String currentDate = now.toLocalDate().toString(); // yyyy-MM-dd
-            String currentTime = now.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm:ss"));
-            DayOfWeek dayOfWeek = now.getDayOfWeek();
-
-            System.out.println("Staff ID " + staffID + " attempted " + action + " on " + currentDate + " (" + dayOfWeek + ") at " + currentTime);
 
             if ("clockin".equals(action)) {
-                // Check if already clocked in
-                ps = conn.prepareStatement("SELECT attendanceClockIn FROM attendance WHERE staffID = ? AND attendanceDate = CURDATE()");
-                ps.setInt(1, staffID);
-                rs = ps.executeQuery();
-
-                if (rs.next() && rs.getTimestamp("attendanceClockIn") != null) {
-                    session.setAttribute("message", "You have already clocked in today.");
-                } else {
-                    // Insert new attendance row
-                    ps = conn.prepareStatement("INSERT INTO attendance (staffID, attendanceClockIn, attendanceDate) VALUES (?, NOW(), CURDATE())");
-                    ps.setInt(1, staffID);
-                    ps.executeUpdate();
-                    session.setAttribute("message", "Clock In successful at " + currentTime + " (" + dayOfWeek + ")");
-                }
-
+                ps = conn.prepareStatement(
+                    "INSERT INTO attendance (userID, clockIn, date) VALUES (?, ?, ?) " +
+                    "ON DUPLICATE KEY UPDATE clockIn = IFNULL(clockIn, VALUES(clockIn))"
+                );
+                ps.setString(1, userID);
+                ps.setTimestamp(2, now);
+                ps.setDate(3, Date.valueOf(today));
+                ps.executeUpdate();
+                request.getSession().setAttribute("clockMessage", "You have clocked in successfully.");
             } else if ("clockout".equals(action)) {
-                // Check if clock-in exists and not yet clocked out
-                ps = conn.prepareStatement("SELECT attendanceClockOut FROM attendance WHERE staffID = ? AND attendanceDate = CURDATE()");
-                ps.setInt(1, staffID);
-                rs = ps.executeQuery();
-
-                if (rs.next() && rs.getTimestamp("attendanceClockOut") == null) {
-                    ps = conn.prepareStatement("UPDATE attendance SET attendanceClockOut = NOW() WHERE staffID = ? AND attendanceDate = CURDATE()");
-                    ps.setInt(1, staffID);
-                    ps.executeUpdate();
-                    session.setAttribute("message", "Clock Out successful at " + currentTime + " (" + dayOfWeek + ")");
+                ps = conn.prepareStatement("UPDATE attendance SET clockOut=? WHERE userID=? AND date=? AND clockIn IS NOT NULL");
+                ps.setTimestamp(1, now);
+                ps.setString(2, userID);
+                ps.setDate(3, Date.valueOf(today));
+                int rowsUpdated = ps.executeUpdate();
+                if (rowsUpdated > 0) {
+                    request.getSession().setAttribute("clockMessage", "You have clocked out successfully.");
                 } else {
-                    session.setAttribute("message", "You need to clock in before clocking out.");
+                    request.getSession().setAttribute("clockMessage", "Please clock in before clocking out.");
                 }
-
-            } else {
-                session.setAttribute("message", "Invalid action.");
             }
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            throw new ServletException("Database error: " + e.getMessage(), e);
+            request.getSession().setAttribute("clockMessage", "An error occurred while processing your request.");
         }
 
-        // Redirect back to clockin page after processing
-        response.sendRedirect("staffClockIn.jsp");
+        // Redirect instead of forward
+        response.sendRedirect("staffDashboard.jsp");
     }
 }
+

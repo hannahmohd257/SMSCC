@@ -1,11 +1,12 @@
 <%-- 
     Document   : foDashboard
-    Created on : 18 May 2025, 6:13:59 am
+    Created on : 15 Jan 2025, 5:46:38 pm
     Author     : user
 --%>
+
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
-    // Retrieve FO session attributes
+    // Retrieve staffName from session
     String userID = (String) session.getAttribute("userID");
     String username = (String) session.getAttribute("username");
     String fullname = (String) session.getAttribute("fullname");
@@ -20,9 +21,9 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>CC | Finance Officer Dashboard</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CC | Human Resource Dashboard</title>
     <style>
         body {
             margin: 0;
@@ -39,7 +40,7 @@
         /* Sidebar Styling */
         .sidebar {
             width: 250px;
-            background-color: #284b63; /* Different blue shade for FO */
+            background-color: #2c2f48;
             color: white;
             display: flex;
             flex-direction: column;
@@ -50,16 +51,21 @@
         .profile {
             text-align: center;
             margin-bottom: 20px;
+        }
+
+        .profile {
+            text-align: center;
+            margin-bottom: 20px;
             display: flex;
             flex-direction: column;
-            align-items: center;
+            align-items: center;  /* Center content horizontally */
         }
 
         .profile-pic {
             width: 100px;
             height: 100px;
             border-radius: 50%;
-            background-color: #a8c0d9;
+            background-color: #d3d3d3;
             margin-bottom: 10px;
         }
 
@@ -67,7 +73,7 @@
             font-size: 18px;
             margin: 0;
             font-weight: bold;
-            text-align: center;
+            text-align: center;  /* Ensure the name is centered */
         }
 
         .nav-links {
@@ -90,15 +96,14 @@
             transition: background-color 0.3s;
         }
 
-        .nav-links a:hover,
-        .nav-links a.active {
-            background-color: #416a8c;
+        .nav-links a:hover, .nav-links a.active {
+            background-color: #4a4f77;
         }
 
         .logout {
             margin-top: auto;
             padding: 10px 15px;
-            background-color: #416a8c;
+            background-color: #4a4f77;
             color: white;
             border-radius: 5px;
             cursor: pointer;
@@ -108,7 +113,7 @@
         }
 
         .logout:hover {
-            background-color: #5a87b0;
+            background-color: #6a7199;
         }
 
         /* Main Content Styling */
@@ -123,11 +128,11 @@
 
         .header h1 {
             font-size: 24px;
-            color: #284b63;
+            color: #2c2f48;
         }
 
         .header .name {
-            color: #416a8c;
+            color: #4a4f77;
         }
 
         /* Dashboard Sections */
@@ -144,13 +149,13 @@
 
         .section h2 {
             font-size: 18px;
-            color: #284b63;
+            color: #2c2f48;
             margin: 0;
         }
         
         .section h3 {
             font-size: 16px;
-            color: #284b63;
+            color: #2c2f48;
             margin: 0;
         }
 
@@ -164,7 +169,7 @@
             padding: 10px 20px;
             font-size: 14px;
             color: #fff;
-            background-color: #416a8c;
+            background-color: #4a4f77;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -172,8 +177,9 @@
         }
 
         .section button:hover {
-            background-color: #5a87b0;
+            background-color: #6a7199;
         }
+
 
         .chart-container {
             display: flex;
@@ -184,7 +190,7 @@
         .chart {
             width: 80px;
             height: 80px;
-            background-color: #a8c0d9;
+            background-color: #d3d3d3;
             border-radius: 50%;
             margin-right: 20px;
         }
@@ -197,11 +203,10 @@
         .employee-count {
             text-align: center;
             font-size: 20px;
-            color: #284b63;
+            color: #2c2f48;
             font-weight: bold;
         }
-
-        /* Dropdown styles from HR */
+        
         .dropdown {
             position: relative;
             display: block;
@@ -219,7 +224,7 @@
         .dropdown-content {
             display: none;
             position: absolute;
-            background-color: #416a8c;
+            background-color: #4a4f77;
             min-width: 200px;
             z-index: 1;
             top: 100%;
@@ -235,7 +240,7 @@
         }
 
         .dropdown-content a:hover {
-            background-color: #5a87b0;
+            background-color: #6a7199;
         }
 
         .dropdown:hover .dropdown-content {
@@ -252,13 +257,28 @@
                 <p class="profile-name"><%= fullname %></p>
             </div>
             <ul class="nav-links">
-                <li><a href="foDashboard.jsp" class="active">Home</a></li>
-                
-                <li><a href="PayrunListServlet">Pay Runs</a></li>
-                <li><a href="FinanceReportsServlet">Reports</a></li>
-                <li><a href="BudgetServlet">Budget Management</a></li>
+                <li><a href="hrDashboard.jsp" class="active">Home</a></li>
+
+                <li class="dropdown">
+                    <a href="#">Users ▾</a> <!-- Main Dropdown Link -->
+                    <ul class="dropdown-content">
+                        <li><a href="UserListServlet?role=Staff">Staff</a></li>
+                        <li><a href="UserListServlet?role=Finance Officer">Finance Officer</a></li>
+                        <li><a href="UserListServlet?role=Manager">Manager</a></li>
+                    </ul>
+                </li>
+
+                <li class="dropdown">
+                    <a href="#">Approvals ▾</a> <!-- Main Dropdown Link -->
+                    <ul class="dropdown-content">
+                        <li><a href="hrLeaveApproval.jsp">Leave Request</a></li>
+                        <li><a href="hrOvertimeApproval.jsp">Overtime Request</a></li>
+                        <li><a href="UserListServlet?role=Manager">Manager</a></li>
+                    </ul>
+                </li>
+                <li><a href="hrReports.jsp">Reports</a></li>
             </ul>
-            
+
             <a href="logout.jsp" class="logout">Logout</a>
         </aside>
 
@@ -268,44 +288,24 @@
                 <h1>Welcome, <span class="name"><%= username %></span>!</h1>
             </header>
 
-            <!-- Current Pay Run Summary -->
+            <!-- Payroll Summary Section -->
             <section class="section">
+                <h3>Payroll Summary</h3>
                 <div>
-                    <h2>Current Pay Run Status</h2>
-                    <p>Status: <strong>Pending Approval</strong></p>
-                    <p>Processed Staff: <strong>12</strong></p>
-                    <p>Total Salary: <strong>RM 50,000.00</strong></p>
+                    <div class="pie-chart-gross"></div>
+                    <div class="legend-label">Gross Pay: RM____</div>
                 </div>
-                <button onclick="location.href='foCreatePayrun.jsp'">Create Pay Run</button>
-            </section>
-
-            <!-- Financial Overview -->
-            <section class="section">
-                <h3>Financial Overview</h3>
-                <div class="chart-container">
-                    <div>
-                        <div class="chart"></div>
-                        <div class="chart-label">Budget: RM 120,000</div>
-                    </div>
-                    <div>
-                        <div class="chart"></div>
-                        <div class="chart-label">Expenses: RM 80,000</div>
-                    </div>
-                    <div>
-                        <div class="chart"></div>
-                        <div class="chart-label">Remaining: RM 40,000</div>
-                    </div>
+                <div>
+                    <div class="pie-chart-deductions"></div>
+                    <div class="legend-label">Deductions: RM____</div>
                 </div>
-            </section>
-
-            <!-- Reports Section -->
-            <section class="section">
-                <h2>Reports</h2>
-                <p>Latest financial reports available for review.</p>
-                <button onclick="location.href='FinanceReportsServlet'">View Reports</button>
+                <div class="section-chart-container">
+                    <h2>Active Staffs</h2>
+                    <p class="employee-count">12</p>
+                    <button><a href="UserListServlet">View Staff</a></button>
+                </div>
             </section>
         </main>
     </div>
 </body>
 </html>
-

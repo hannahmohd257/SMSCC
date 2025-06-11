@@ -7,7 +7,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="java.util.*" %>
 <%
-    String staffFullname = request.getParameter("staffFullname");
+    String fullname = request.getParameter("fullname");
 %>
 <!DOCTYPE html>
 <html>
@@ -219,13 +219,22 @@
         <div class="sidebar">
             <div class="profile">
                 <div class="profile-pic"></div>
-                <p class="profile-name"><%= staffFullname != null ? staffFullname : "Finance Officer" %></p>
+                <p class="profile-name"><%= fullname != null ? fullname : "Human Resource" %></p>
             </div>
             <ul class="nav-links">
-                <li><a href="foDashboard.jsp">Home</a></li>
-                <li><a href="StaffListServlet" class="active">Staff</a></li>
-                <li><a href="foApprovals.jsp">Approvals</a></li>
-                <li><a href="foReports.jsp">Reports</a></li>
+                <li><a href="hrDashboard.jsp">Home</a></li>
+
+                <li class="dropdown">
+                    <a href="#">Users ▾</a> <!-- Main Dropdown Link -->
+                    <ul class="dropdown-content">
+                        <li><a href="UserListServlet?role=Staff">Staff</a></li>
+                        <li><a href="UserListServlet?role=Finance Officer">Finance Officer</a></li>
+                        <li><a href="UserListServlet?role=Manager">Manager</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="hrApprovals.jsp">Approvals</a></li>
+                <li><a href="hrReports.jsp">Reports</a></li>
             </ul>
             <a href="logout.jsp" class="logout">Logout</a>
         </div>
@@ -255,7 +264,7 @@
             </div>
 
             <!-- Form -->
-            <form action="AddEmployeeServlet" method="post">
+            <form action="AddStaffServlet" method="post">
                 <input type="hidden" name="step" value="2">
 
                 <label for="salaryBasic">Basic Salary:</label>

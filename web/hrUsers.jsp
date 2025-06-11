@@ -8,13 +8,13 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <%
     // Retrieve staffFullname from session
-    String staffFullname = (String) session.getAttribute("staffFullname");
+    String fullname = (String) session.getAttribute("fullname");
 
 %>
 <!DOCTYPE html>
 <html>
 <head>
-    <title>CC | Staff List</title>
+    <title>CC | User List</title>
     <style>
         body {
             margin: 0;
@@ -195,52 +195,79 @@
         <aside class="sidebar">
             <div class="profile">
                 <div class="profile-pic"></div>
-                <p class="profile-name"><%= staffFullname %></p>
+                <p class="profile-name"><%= fullname %></p>
             </div>
             <ul class="nav-links">
-                <li><a href="foDashboard.jsp">Home</a></li>
-                <li><a href="StaffListServlet" class="active">Staffs</a></li>
-                <li><a href="foApprovals.jsp">Approvals</a></li>
-                <li><a href="foReports.jsp">Reports</a></li>
+                <li><a href="hrDashboard.jsp">Home</a></li>
+
+                <li class="dropdown">
+                    <a href="#" class="active">Users ▾</a> <!-- Main Dropdown Link -->
+                    <ul class="dropdown-content">
+                        <li><a href="UserListServlet?role=Staff">Staff</a></li>
+                        <li><a href="UserListServlet?role=Finance Officer">Finance Officer</a></li>
+                        <li><a href="UserListServlet?role=Manager">Manager</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="hrApprovals.jsp">Approvals</a></li>
+                <li><a href="hrReports.jsp">Reports</a></li>
             </ul>
             <a href="logout.jsp" class="logout">Logout</a>
         </aside>
 
         <main class="content">
             <div class="header">
-                <h2 style="display: inline-block;">Staffs</h2>
-                <a href="foAddEmployee1.jsp" class="add-button">Add New Staff</a>
+                <!-- Dynamically set the title based on the role -->
+                <h2 style="display: inline-block;">
+                    <c:choose>
+                        <c:when test="${param.role == 'Staff'}">Staff</c:when>
+                        <c:when test="${param.role == 'Finance Officer'}">Finance Officer</c:when>
+                        <c:when test="${param.role == 'Manager'}">Manager</c:when>
+                        <c:otherwise>Users</c:otherwise>
+                    </c:choose>
+                </h2>
+
+                <c:choose>
+                    <c:when test="${param.role == 'Staff'}">
+                        <a href="hrAddStaff1.jsp" class="add-button">Add New ${param.role}</a>
+                    </c:when>
+                    <c:otherwise>
+                        <c:url var="addUserUrl" value="hrAddUser.jsp">
+                            <c:param name="role" value="${param.role}" />
+                        </c:url>
+                        <a href="${addUserUrl}" class="add-button">Add New ${param.role}</a>
+                    </c:otherwise>
+                </c:choose>
             </div>
 
             <table>
                 <thead>
                     <tr>
-                        <th>Staff ID</th>
+                        <th>User ID</th>
                         <th>Full Name</th>
                         <th>Email</th>
-                        <th>Position</th>
-                        <th>Actions</th> <!-- Added Actions column for buttons -->
+                        <th>Actions</th> <!-- Actions column for Edit/Delete -->
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach var="staff" items="${staffList}">
+                    <!-- Iterate over userList (generic for Staff, Finance Officer, Manager) -->
+                    <c:forEach var="user" items="${userList}">
                         <tr>
-                            <td>${staff.staffID}</td>
-                            <td><a href="StaffDetailsServlet?staffID=${staff.staffID}&viewType=overview">${staff.staffFullname}</a></td>
-                            <td>${staff.staffEmail}</td>
-                            <td>${staff.staffPosition}</td>
+                            <td>${user.userID}</td>
+                            <td><a href="UserDetailsServlet?userID=${user.userID}&viewType=overview">${user.fullname}</a></td>
+                            <td>${user.email}</td>
                             <td>
                                 <!-- Edit Button with Icon -->
-                                <a href="UpdateStaffServlet?staffID=${staff.staffID}&editMode=true" class="icon-button">
+                                <a href="UpdateUserServlet?userID=${user.userID}&editMode=true" class="icon-button">
                                     <i class="fa fa-edit"></i>
                                 </a>
 
-                                <a href="EmployeeListServlet?action=delete&staffID=${staff.staffID}" 
+                                <!-- Delete Button with Icon -->
+                                <a href="UpdateUserServlet?action=delete&userID=${user.userID}" 
                                     class="icon-button trash" 
-                                    onclick="return confirmDelete('${staff.staffFullname}')">
+                                    onclick="return confirmDelete('${user.fullname}')">
                                     <i class="fa fa-trash"></i>
                                  </a>
-
                             </td>
                         </tr>
                     </c:forEach>
@@ -250,11 +277,10 @@
     </div>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <script>
-        function confirmDelete(staffName) {
-            var result = confirm("Are you sure you want to delete " + staffName + "? This action cannot be undone.");
+        function confirmDelete(userName) {
+            var result = confirm("Are you sure you want to delete " + userName + "? This action cannot be undone.");
             return result; // If confirmed, will proceed with the delete, otherwise will cancel the action.
         }
     </script>
 </body>
-
 </html>

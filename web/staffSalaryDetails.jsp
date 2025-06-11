@@ -1,19 +1,31 @@
 <%-- 
-    Document   : managerDashboard
-    Created on : 15 Jan 2025, 7:00:20 pm
+    Document   : staffSalaryDetails
+    Created on : 31 May 2025, 2:29:50 pm
     Author     : user
 --%>
+
+<%@page import="java.sql.ResultSet"%>
+<%@page import="java.sql.DriverManager"%>
+<%@page import="java.sql.PreparedStatement"%>
+<%@page import="java.sql.Connection"%>
+<%@page import="java.time.DayOfWeek"%>
+<%@page import="java.time.format.DateTimeFormatter"%>
+<%@page import="java.time.LocalDateTime"%>
+<%@ page import="model.User" %>
+<%@ page import="java.util.List" %>
 <%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%
     // Retrieve staffName from session
     String username = (String) session.getAttribute("username");
     String fullname = (String) session.getAttribute("fullname");
 
-    // Redirect to login if staffName is missing
-    if (username == null) {
+    
+    User user = (User) session.getAttribute("user");
+    if (user == null) {
         response.sendRedirect("login.jsp");
         return;
     }
+
 %>
 
 <!DOCTYPE html>
@@ -21,7 +33,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CC | Manager Dashboard</title>
+    <title>CC | Staff Dashboard</title>
     <style>
         body {
             margin: 0;
@@ -68,6 +80,7 @@
             font-weight: bold;
             text-align: center;  /* Ensure the name is centered */
         }
+
 
         .nav-links {
             list-style: none;
@@ -131,19 +144,20 @@
         /* Dashboard Sections */
         .section {
             background-color: #e1e1e1;
-            padding: 23px;
+            padding: 20px;
             border-radius: 10px;
             margin-bottom: 20px;
-            display: flex;
+/*            display: flex;
             justify-content: space-between;
-            align-items: center;
+            align-items: center;*/
+            display: block;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .section h2 {
             font-size: 18px;
             color: #2c2f48;
-            margin-bottom: 15px;
+            margin: 0;
         }
 
         .section p {
@@ -166,31 +180,24 @@
         .section button:hover {
             background-color: #6a7199;
         }
-        
-        .chart-container {
+
+        .container-payroll {
             display: flex;
-            justify-content: space-between;
             align-items: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        .pie-chart-gross {
-            width: 130px;
-            height: 130px;
+        .pie-chart {
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
             background: conic-gradient(
-                #4CAF50 0% 50%, /* nothing */
+                #4CAF50 0% 50%, /* Netpay */
+                #F44336 50% 75%, /* Deductions */
                 #2196F3 75% 100% /* Gross Pay */
-            );
-            position: relative;
-        }
-        
-            .pie-chart-deductions {
-            width: 130px;
-            height: 130px;
-            border-radius: 50%;
-            background: conic-gradient(
-               #4CAF50 0% 50%, /* nothing */
-                #F44336 50% 75% /* Deductions */
             );
             position: relative;
         }
@@ -205,18 +212,45 @@
             background: #fff;
             border-radius: 50%;
         }
-        
+
+        .legend {
+            margin-left: 20px;
+        }
+
+        .legend h2 {
+            margin: 0 0 10px 0;
+            font-size: 18px;
+            color: #333;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .legend-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            margin-right: 10px;
+        }
+
+        .gross-pay {
+            background: #2196F3;
+        }
+
+        .deductions {
+            background: #F44336;
+        }
+
+        .netpay {
+            background: #4CAF50;
+        }
+
         .legend-label {
             font-size: 16px;
             color: #555;
-            margin-top: 10px;
-        }
-        
-        .employee-count {
-            text-align: center;
-            font-size: 20px;
-            color: #2c2f48;
-            font-weight: bold;
         }
     </style>
 </head>
@@ -229,37 +263,34 @@
                 <p class="profile-name"><%= fullname %></p>
             </div>
             <ul class="nav-links">
-                <li><a href="managerDashboard.jsp" class="active">Home</a></li>
-                <li><a href="managerStaffAttendance.jsp">Attendance</a></li>
-                <li><a href="managerApprovals.jsp">Approvals</a></li>
+                <li><a href="staffDashboard.jsp">Home</a></li>
+                <li><a href="staffSalaryDetails.jsp"  class="active">Salary Details</a></li>
             </ul>
             <a href="logout.jsp" class="logout">Logout</a>
         </aside>
 
         <!-- Main Content -->
         <main class="content">
-            <header class="header">
-                <h1>Welcome, <span class="name"><%= username %></span>!</h1>
-            </header>
             
-            <h2>Payroll Summary</h2>
             <!-- Payroll Summary Section -->
-            <section class="section">
-                
-                <div>
-                    <div class="pie-chart-gross"></div>
-                    <div class="legend-label">Gross Pay: RM____</div>
+            <div class="container-payroll">
+                <div class="pie-chart"></div>
+                <div class="legend">
+                    <h2>Your Salary</h2>
+                    <div class="legend-item">
+                        <div class="legend-color gross-pay"></div>
+                        <div class="legend-label">Gross Pay: RM____</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color deductions"></div>
+                        <div class="legend-label">Deductions: RM____</div>
+                    </div>
+                    <div class="legend-item">
+                        <div class="legend-color netpay"></div>
+                        <div class="legend-label">Netpay: RM____</div>
+                    </div>
                 </div>
-                <div>
-                    <div class="pie-chart-deductions"></div>
-                    <div class="legend-label">Deductions: RM____</div>
-                </div>
-                <div class="section-chart-container">
-                    <h2>Active Employees</h2>
-                    <p class="employee-count">12</p>
-                    <button>View Employees</button>
-                </div>
-            </section>
+            </div>
         </main>
     </div>
 </body>

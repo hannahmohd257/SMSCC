@@ -8,18 +8,22 @@ public class User {
     private String userID;
     private String role;
     private String username;
+    private String fullname;
     private String password;
+    private String email;
 
     // Default constructor
     public User() {
     }
 
     // Constructor with fields
-    public User(String userID, String role, String username, String password) {
+    public User(String userID, String role, String username, String fullname, String password, String email) {
         this.userID = userID;
         this.role = role;
         this.username = username;
+        this.fullname = fullname;
         this.password = password;
+        this.email = email;
     }
 
     // Getters and Setters
@@ -46,6 +50,14 @@ public class User {
     public void setUsername(String username) {
         this.username = username;
     }
+    
+    public String getFullname() {
+        return fullname;
+    }
+
+    public void setFullname(String fullname) {
+        this.fullname = fullname;
+    }
 
     public String getPassword() {
         return password;
@@ -53,6 +65,14 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+    
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail (String email) {
+        this.email = email;
     }
 
     // Optional: toString() for debugging
@@ -62,8 +82,14 @@ public class User {
                 "userID='" + userID + '\'' +
                 ", role='" + role + '\'' +
                 ", username='" + username + '\'' +
+                ", fullname='" + fullname + '\'' +
                 ", password='" + password + '\'' +
+                ", email='" + email + '\'' +
                 '}';
+    }
+
+    public double getBasicSalary() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
 }
 

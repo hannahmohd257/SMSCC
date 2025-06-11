@@ -4,12 +4,18 @@
     Author     : user
 --%>
 
+<%@page import="model.User"%>
 <%@page import="model.Staff"%>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <%
-    // Retrieve staffFullname from session
-    String staffFullname = (String) session.getAttribute("staffFullname");
-    Staff staff = (Staff) request.getAttribute("staff");
+    User user = (User) request.getAttribute("user");
+    Staff staff = (Staff) request.getAttribute("staff"); // could be null if not staff
+    String fullname = request.getParameter("fullname");
+
+    String selectedBank = null;
+    if (staff != null) {
+        selectedBank = staff.getStaffBank();
+    }
 %>
 <!DOCTYPE html>
 <html lang="en">
@@ -17,7 +23,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <title>CC | Employee Overview</title>
+    <title>CC | User Overview</title>
     <style>
         body {
             margin: 0;
@@ -222,13 +228,22 @@
         <div class="sidebar">
             <div class="profile">
                 <div class="profile-pic"></div>
-                <p class="profile-name"><%= staffFullname %></p>
+                <p class="profile-name"><%= fullname %></p>
             </div>
             <ul class="nav-links">
-                <li><a href="foDashboard.jsp">Home</a></li>
-                <li><a href="StaffListServlet" class="active">Staff</a></li>
-                <li><a href="foApprovals.jsp">Approvals</a></li>
-                <li><a href="foReports.jsp">Reports</a></li>
+                <li><a href="hrDashboard.jsp">Home</a></li>
+
+                <li class="dropdown">
+                    <a href="#" class="active">Users ▾</a> <!-- Main Dropdown Link -->
+                    <ul class="dropdown-content">
+                        <li><a href="UserListServlet?role=Staff">Staff</a></li>
+                        <li><a href="UserListServlet?role=Finance Officer">Finance Officer</a></li>
+                        <li><a href="UserListServlet?role=Manager">Manager</a></li>
+                    </ul>
+                </li>
+
+                <li><a href="hrApprovals.jsp">Approvals</a></li>
+                <li><a href="hrReports.jsp">Reports</a></li>
             </ul>
             <a href="logout.jsp" class="logout">Logout</a>
         </div>
@@ -236,40 +251,49 @@
         <!-- Main Content --> 
         <div class="content">
             <div class="header">
-                <h1><span class="name">Staff ID: ${staff.staffID}</span></h1>
+                <h1><span class="name">User ID: ${user.userID}</span></h1>
             </div>
 
             <div class="tabs">
-                <a href="StaffDetailsServlet?staffID=${staff.staffID}&viewType=overview">Overview</a> |
-                <a href="StaffDetailsServlet?staffID=${staff.staffID}&viewType=salary">Salary Details</a> |
-                <a href="StaffDetailsServlet?staffID=${staff.staffID}&viewType=payslip" class="active">Payslips</a>
+                <a href="UserDetailsServlet?userID=${user.userID}&viewType=overview" class="active">Overview</a> |
+                <a href="UserDetailsServlet?userID=${user.userID}&viewType=salary">Salary Details</a> |
+                <a href="UserDetailsServlet?userID=${user.userID}&viewType=payslip">Payslips</a>
             </div>
 
-            <div class="employee-details">
-                <div class="employee-card">
+            <div class="staff-details">
+                <div class="staff-card">
                     <img src="#" alt="Profile Picture">
-                    <p class="employee-info">Name: ${staff.staffFullname}</p>
-                    <p class="employee-info">Position: ${staff.staffPosition}</p>
+                    <p class="employee-info">Name: ${user.fullname}</p>
+                    <p class="employee-info">Role: ${user.role}</p>
+
                     <!-- Edit button -->
-                    <button class="edit-btn" onclick="window.location.href='UpdateStaffServlet?staffID=${staff.staffID}'">
+                    <button class="edit-btn" onclick="window.location.href='UpdateUserServlet?userID=${user.userID}'">
                         <i class="fas fa-edit"></i> Edit
                     </button>
+
                 </div>
+
                 <div class="personal-details">
-                    <h3>Personal Details</h3>
-                    <p>Full Name: ${staff.staffFullname}</p>
-                    <p>Password: ${staff.staffPassword}</p>
-                    <p>Role: ${staff.staffRole}</p>
-                    <p>Gender: ${staff.staffGender}</p>
-                    <p>Phone Number: ${staff.staffPhoneno}</p>
-                    <p>Date of Birth: ${staff.staffDOB}</p>
-                    <p>Email: ${staff.staffEmail}</p>
-                    <p>Residential Area: ${staff.staffAddress}</p>
-                    <p>Joined Date: ${staff.staffJoinedDate}</p>
-                    <p>Marital Status: ${staff.staffMaritalStatus}</p>
-                    <p>Employment Type: ${staff.staffEmpType}</p>
-                    <p>Bank Type: ${staff.staffBank}</p>
-                    <p>Bank Account Number: ${staff.staffAccNo}</p>
+                    <%-- Always visible for all users --%>
+                    <p>Username: ${user.username}</p>
+                    <p>Full Name: ${user.fullname}</p>
+                    <p>Email: ${user.email}</p>
+                    <p>Role: ${user.role}</p>
+
+                    <%-- Staff-specific fields --%>
+                    <c:if test="${user.role == 'Staff' && staff != null}">
+                        <p>Staff Position: ${staff.staffPosition}</p>
+                        <p>Gender: ${staff.staffGender}</p>
+                        <p>Phone Number: ${staff.staffPhoneno}</p>
+                        <p>Date of Birth: ${staff.staffDOB}</p>
+                        <p>Residential Area: ${staff.staffAddress}</p>
+                        <p>Joined Date: ${staff.staffJoinedDate}</p>
+                        <p>Marital Status: ${staff.staffMaritalStatus}</p>
+                        <p>Employment Type: ${staff.staffEmpType}</p>
+                        <p>Bank Type: ${staff.staffBank}</p>
+                        <p>Bank Account Number: ${staff.staffAccNo}</p>
+                        <p>Basic Salary: ${staff.basicSalary}</p>
+                    </c:if>
                 </div>
             </div>
         </div>

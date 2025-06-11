@@ -1,80 +1,105 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/JSP_Servlet/Servlet.java to edit this template
- */
+
 package servlet;
 
-import model.Staff;
-import dao.StaffDAO;
-
+import dao.UserDAO;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import model.User;
 
 public class LoginServlet extends HttpServlet {
 
-    private StaffDAO staffDAO = new StaffDAO();
+    private final UserDAO userDAO = new UserDAO();
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-            int staffID = Integer.parseInt(request.getParameter("staffID"));
-            String staffPassword = request.getParameter("staffPassword");
-            String staffRole = request.getParameter("staffRole"); // Role from form
+        
+        // Get parameters
+        String userID = request.getParameter("userID").trim();
+        String password = request.getParameter("password");
+        String role = request.getParameter("role");
+        
+
+        // Debug logging
+        System.out.printf("Login attempt - UserID: %s, Role: %s%n", userID, role);
+
+        // Validate input
+        if (userID.isEmpty() || password.isEmpty() || role == null) {
+            sendError(request, response, "All fields are required");
+            return;
+        }
 
         try {
-            // Validate credentials
-            boolean isValid = staffDAO.validateStaffCredentials(staffID, staffPassword, staffRole);
+            // Authenticate user
+            User user = userDAO.validateAndGetUser(userID, password, role);
 
-            HttpSession session = request.getSession();
-            session.invalidate(); // Clear old session
-            session = request.getSession(true); // Create new session
-            session.setAttribute("staffRole", staffRole); // Save role as string
-
-            if (isValid) {
-                // Retrieve the staff details from the database
-                Staff staff = staffDAO.getStaffByID(staffID);
-
-                if (staff != null) {
-                    // Save staff information in the session
-                    session.setAttribute("staffName", staff.getStaffName());
-                    session.setAttribute("staffFullname", staff.getStaffFullname());
-                    session.setAttribute("staffRole", staff.getStaffRole());
-
-                    // Redirect to the appropriate dashboard based on the role
-                    switch (staffRole) {
-                        case "General Staff":
-                            response.sendRedirect("staffDashboard.jsp");
-                            break;
-                        case "Finance Officer":
-                            response.sendRedirect("foDashboard.jsp");
-                            break;
-                        case "Manager":
-                            response.sendRedirect("managerDashboard.jsp");
-                            break;
-                        default:
-                            throw new IllegalArgumentException("Invalid role.");
-                    }
-                } else {
-                    request.setAttribute("errorMessage", "Staff details not found.");
-                    request.getRequestDispatcher("login.jsp").forward(request, response);
-                }
+            if (user != null) {
+                handleSuccessfulLogin(request, response, user);
             } else {
-                // Invalid login
-                request.setAttribute("errorMessage", "Invalid login credentials or role selected.");
-                request.getRequestDispatcher("login.jsp").forward(request, response);
+                sendError(request, response, "Invalid credentials or role mismatch");
             }
-        } catch (IllegalArgumentException e) {
-            e.printStackTrace();
-            request.setAttribute("errorMessage", "Invalid role selected.");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
         } catch (Exception e) {
             e.printStackTrace();
-            request.setAttribute("errorMessage", "An error occurred. Please try again.");
-            request.getRequestDispatcher("login.jsp").forward(request, response);
+            sendError(request, response, "System error during login");
         }
+    }
+
+    private void handleSuccessfulLogin(HttpServletRequest request, 
+                                     HttpServletResponse response,
+                                     User user) throws IOException, ServletException {
+        // Create new session (invalidate old one if exists)
+        HttpSession oldSession = request.getSession(false);
+        if (oldSession != null) {
+            oldSession.invalidate();
+        }
+        
+        HttpSession newSession = request.getSession(true);
+        
+        // Set session attributes
+        newSession.setAttribute("user", user);  // Store entire user object
+        newSession.setAttribute("userID", user.getUserID());
+        newSession.setAttribute("username", user.getUsername());
+        newSession.setAttribute("role", user.getRole());
+        newSession.setAttribute("fullname", user.getFullname());
+        newSession.setAttribute("email", user.getEmail());
+        
+        
+        // Set session timeout (30 minutes)
+        newSession.setMaxInactiveInterval(30 * 60);
+        
+        // Debug logging
+        System.out.printf("Login successful - UserID: %s, Role: %s, SessionID: %s%n",
+                user.getUserID(), user.getRole(), newSession.getId());
+
+        // Redirect based on role
+        String redirectPath = getDashboardPath(user.getRole());
+        if (redirectPath != null) {
+            System.out.println("Redirecting to: " + redirectPath);
+            response.sendRedirect(request.getContextPath() + redirectPath);
+        } else {
+            sendError(request, response, "Invalid user role");
+        }
+    }
+
+    private String getDashboardPath(String role) {
+        switch (role) {
+            case "Staff": return "/staffDashboard.jsp";
+            case "Human Resource": return "/hrDashboard.jsp";
+            case "Finance Officer": return "/foDashboard.jsp";
+            case "Manager": return "/managerDashboard.jsp";
+            default: return null;
+        }
+    }
+
+    private void sendError(HttpServletRequest request,
+                         HttpServletResponse response,
+                         String message) throws ServletException, IOException {
+        System.out.println("Login failed: " + message);
+        request.setAttribute("errorMessage", message);
+        request.getRequestDispatcher("/login.jsp").forward(request, response);
     }
 }
